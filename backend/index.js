@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -9,23 +13,22 @@ const passport = require('passport');
 const LocalStrategy = require("passport-local");
 const User = require('./models/user');
 
-
 const dbUrl = process.env.DB_URL;
-const connectDB = async () => {
-    try {
-        mongoose.set('strictQuery', true);
-        const conn = await mongoose.connect(dbUrl);
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
-    } catch (error) {
-        console.log(error);
-        process.exit(1);
-    }
-}
+mongoose.set('strictQuery', true);
+mongoose.connect(dbUrl);
+
+mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+mongoose.connection.once('open', () => {
+    console.log("Database Connected ~mongoose");
+})
 const app = express();
 
-app.engine('ejs', ejsMate);
+if (process.env.NODE_ENV !== 'production') {
+    app.use(express.static(path.join(__dirname, "frontend/public")));
+} else {
+    app.use(express.static(path.join(__dirname, 'build')));
+}
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
@@ -43,11 +46,10 @@ const store = MongoStore.create({
 store.on('error', function (e) {
     console.log("SESSION STORE ERROR : ", e)
 })
-
 const sessionConfig = {
     store,
     name: 'session',
-    secret: 'asecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -72,7 +74,7 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use('/', userRoutes);
+// app.use('/', userRoutes);
 
 
 app.all('*', (req, res, next) => {
@@ -83,13 +85,11 @@ app.use((err, req, res, next) => {
     if (!err.message) err.message = 'Something Went Wrong!'
     res.status(statusCode).render('error', { err });
 })
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3100;
 
 
 
 //Connect to the database before listening
-connectDB().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT} ~express`);
-    })
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT} ~express`);
 })
