@@ -3,23 +3,34 @@ import Navbar from "../components/Navbar";
 import { useState } from "react";
 import "./Vote3.css";
 
-const daysOfWeek = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
+const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
+const monthsOfYear = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
-
 function displayCalendarStat(vote, voteData) {
   const firstDay = new Date(vote.year, vote.month - 1, 1).getDay();
   const totalDays = new Date(vote.year, vote.month, 0).getDate();
   const totalVoters = voteData.length;
   //   return { firstDay, totalDays };
   return (
-    <div>
+    <div
+      className="tab-pane fade show active"
+      id={"tabs_" + vote.month}
+      role="tabpanel"
+      aria-labelledby="nav-home-tab"
+      tabindex="0"
+    >
       <div>{vote.month}</div>
       <div>{vote.year}</div>
       <div className="calendarGrid">
@@ -40,10 +51,6 @@ function displayCalendarStat(vote, voteData) {
                   Math.round((vote / totalVoters) * 10);
                 return className;
               })()}
-              style={{
-                width: "40px",
-                height: "40px",
-              }}
             >
               {vote}
             </div>
@@ -57,6 +64,15 @@ function displayCalendarStat(vote, voteData) {
 
 function displayBlocksOfDate() {}
 function Vote3() {
+  const [selectedMonthToDisplay, setSelectedMonthToDisplay] = useState();
+  useEffect(() => {
+    // automatically select a month to display on after page load
+    return () => {
+      if (votedDateFrequency) {
+        setSelectedMonthToDisplay(votedDateFrequency[0].month);
+      }
+    };
+  }, []);
   const [votedDateFrequency, setVotedDateFrequency] = useState([
     {
       year: 2023,
@@ -92,11 +108,32 @@ function Vote3() {
   return (
     <div className="mainPage">
       <Navbar />
-      <div className="d-flex justify-content-center">
-        <div className={"col-6"}>
-          {votedDateFrequency.map((vote) => {
-            return displayCalendarStat(vote, voteData);
-          })}
+      <div className="container-xxl">
+        <nav>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            {votedDateFrequency.map((vote, i) => {
+              return (
+                <button
+                  class={(i = 0 ? "nav-link active" : "nav-link")}
+                  id={"btn_tabs_" + vote.month}
+                  data-bs-toggle="tab"
+                  onClick={() => setSelectedMonthToDisplay(vote.month)}
+                >
+                  {monthsOfYear[vote.month - 1]} {vote.year}
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+
+        <div class="tab-content" id="nav-tabContent">
+          <div className={"col-sm-6 offset-sm-3"}>
+            {votedDateFrequency.map((vote) => {
+              if (vote.month == selectedMonthToDisplay) {
+                return displayCalendarStat(vote, voteData);
+              }
+            })}
+          </div>
         </div>
       </div>
     </div>
