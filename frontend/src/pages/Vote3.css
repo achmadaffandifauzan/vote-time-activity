@@ -1,0 +1,28 @@
+.calendarGrid {
+  background-color: aquamarine;
+  display: grid;
+  grid-template-columns: repeat(7, 14%);
+}
+.calendarHeader {
+}
+.firstDay_0 {
+  grid-column-start: 1;
+}
+.firstDay_1 {
+  grid-column-start: 2;
+}
+.firstDay_2 {
+  grid-column-start: 3;
+}
+.firstDay_3 {
+  grid-column-start: 4;
+}
+.firstDay_4 {
+  grid-column-start: 5;
+}
+.firstDay_5 {
+  grid-column-start: 6;
+}
+.firstDay_6 {
+  grid-column-start: 7;
+}

@@ -1,6 +1,7 @@
 import { React, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { useState } from "react";
+import "./Vote3.css";
 
 const daysOfWeek = [
   "Sunday",
@@ -17,12 +18,21 @@ function displayCalendarStat(vote) {
   const totalDays = new Date(vote.year, vote.month, 0).getDate();
   //   return { firstDay, totalDays };
   return (
-    <div>
-      <div className="d-flex justify-content-center">
-        {vote.voteData.map((totalVoters) => {
+    <>
+      <div>{vote.month}</div>
+      <div>{vote.year}</div>
+      <div className="calendarGrid">
+        {daysOfWeek.map((day) => {
+          return <div className="calendarHeader">{day}</div>;
+        })}
+        {vote.voteData.map((totalVoters, i) => {
           return (
             <div
-              className=""
+              className={
+                i == 0
+                  ? "calendarMain" + " " + "firstDay_" + firstDay
+                  : "calendarMain"
+              }
               style={{
                 width: "40px",
                 height: "40px",
@@ -34,7 +44,7 @@ function displayCalendarStat(vote) {
           );
         })}
       </div>
-    </div>
+    </>
   );
 }
 // console.log(displayCalendarStat(2023, 9));
