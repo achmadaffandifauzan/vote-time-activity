@@ -1,9 +1,15 @@
 .calendarGrid {
   background-color: aquamarine;
   display: grid;
-  grid-template-columns: repeat(7, 14%);
+  grid-template-columns: repeat(7, auto);
 }
 .calendarHeader {
+  min-width: 40px;
+  min-height: 40px;
+}
+.calendarMain {
+  min-width: 40px;
+  min-height: 40px;
 }
 .firstDay_0 {
   grid-column-start: 1;
@@ -25,4 +31,31 @@
 }
 .firstDay_6 {
   grid-column-start: 7;
+}
+.bg_color_red_9 {
+  background-color: rgb(255, 68, 0, 0.9);
+}
+.bg_color_red_8 {
+  background-color: rgb(255, 68, 0, 0.8);
+}
+.bg_color_red_7 {
+  background-color: rgb(255, 68, 0, 0.7);
+}
+.bg_color_red_6 {
+  background-color: rgb(255, 68, 0, 0.6);
+}
+.bg_color_red_5 {
+  background-color: rgb(255, 68, 0, 0.5);
+}
+.bg_color_red_4 {
+  background-color: rgb(255, 68, 0, 0.4);
+}
+.bg_color_red_3 {
+  background-color: rgb(255, 68, 0, 0.3);
+}
+.bg_color_red_2 {
+  background-color: rgb(255, 68, 0, 0.2);
+}
+.bg_color_red_1 {
+  background-color: rgb(255, 68, 0, 0.1);
 }
