@@ -67,7 +67,7 @@ function displayCalendarStat(vote, voteData) {
               {vote > 0 ? (
                 <span
                   style={{ display: "none" }}
-                  className="badge badgeVoters bg-primary"
+                  className="badge badgeVoters bg-success mx-1"
                 >
                   {vote}
                 </span>
