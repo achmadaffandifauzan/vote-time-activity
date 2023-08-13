@@ -1,9 +1,8 @@
 import { React, useEffect, useRef } from "react";
-import Navbar from "../components/Navbar";
 import { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-function Vote() {
+function CalendarSelect() {
   const [selectedDate, setSelectedDate] = useState(); // type : date
   const [times, setTimes] = useState([]); // type : number
 
@@ -24,14 +23,14 @@ function Vote() {
     console.log(times);
   }, [times]);
   return (
-    <div className="mainPage">
-      <Navbar />
-      <div className={"d-flex justify-content-center "}>
-        <Calendar onChange={onChange} value={selectedDate} />
-      </div>
-      <div></div>
+    <div className={"d-flex justify-content-center "}>
+      <Calendar
+        onChange={onChange}
+        value={selectedDate}
+        calendarType={"gregory"}
+      />
     </div>
   );
 }
 
-export default Vote;
+export default CalendarSelect;

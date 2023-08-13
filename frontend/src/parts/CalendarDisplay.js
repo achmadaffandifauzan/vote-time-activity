@@ -1,9 +1,8 @@
 import { React, useEffect, useRef } from "react";
-import Navbar from "../components/Navbar";
 import { useState } from "react";
-import "./Vote3.css";
+import "./CalendarDisplay.css";
 
-const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
+const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const monthsOfYear = [
   "January",
   "February",
@@ -29,17 +28,29 @@ function displayCalendarStat(vote, voteData) {
       id={"tabs_" + vote.month}
       role="tabpanel"
       aria-labelledby="nav-home-tab"
-      tabindex="0"
+      tabIndex="0"
     >
-      <div>{vote.month}</div>
-      <div>{vote.year}</div>
-      <div className="calendarGrid">
+      <div className="calendarGrid my-3">
         {daysOfWeek.map((day) => {
           return <div className="calendarHeader">{day}</div>;
         })}
         {vote.frequencies.map((vote, i) => {
           return (
             <div
+              onMouseEnter={(e) => {
+                if (e.target.querySelector(".badgeVoters")) {
+                  document.querySelectorAll(".badgeVoters").forEach((badge) => {
+                    return (badge.style.display = "inline");
+                  });
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (e.target.querySelector(".badgeVoters")) {
+                  document.querySelectorAll(".badgeVoters").forEach((badge) => {
+                    return (badge.style.display = "none");
+                  });
+                }
+              }}
               className={(() => {
                 let className = "calendarMain ";
                 if (i == 0) {
@@ -52,7 +63,17 @@ function displayCalendarStat(vote, voteData) {
                 return className;
               })()}
             >
-              {vote}
+              <span>{i + 1}</span>
+              {vote > 0 ? (
+                <span
+                  style={{ display: "none" }}
+                  className="badge badgeVoters bg-primary"
+                >
+                  {vote}
+                </span>
+              ) : (
+                ""
+              )}
             </div>
           );
         })}
@@ -62,13 +83,15 @@ function displayCalendarStat(vote, voteData) {
 }
 // console.log(displayCalendarStat(2023, 9));
 
-function displayBlocksOfDate() {}
-function Vote3() {
+function CalendarDisplay() {
   const [selectedMonthToDisplay, setSelectedMonthToDisplay] = useState();
   useEffect(() => {
     // automatically select a month to display on after page load
     return () => {
       if (votedDateFrequency) {
+        document
+          .querySelectorAll(".nav-link-months")[0]
+          .classList.add("active");
         setSelectedMonthToDisplay(votedDateFrequency[0].month);
       }
     };
@@ -106,38 +129,39 @@ function Vote3() {
     { contributor: "user12", voted: ["2023-08-12", "2023-08-14"] },
   ]);
   return (
-    <div className="mainPage">
-      <Navbar />
-      <div className="container-xxl">
-        <nav>
-          <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            {votedDateFrequency.map((vote, i) => {
-              return (
-                <button
-                  class={(i = 0 ? "nav-link active" : "nav-link")}
-                  id={"btn_tabs_" + vote.month}
-                  data-bs-toggle="tab"
-                  onClick={() => setSelectedMonthToDisplay(vote.month)}
-                >
-                  {monthsOfYear[vote.month - 1]} {vote.year}
-                </button>
-              );
-            })}
-          </div>
-        </nav>
+    <>
+      <nav>
+        <div
+          className="nav nav-tabs col-sm-6 offset-sm-3"
+          id="nav-tab"
+          role="tablist"
+        >
+          {votedDateFrequency.map((vote, i) => {
+            return (
+              <button
+                className={"nav-link nav-link-months"}
+                id={"btn_tabs_" + vote.month}
+                data-bs-toggle="tab"
+                onClick={() => setSelectedMonthToDisplay(vote.month)}
+              >
+                {monthsOfYear[vote.month - 1]} {vote.year}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
 
-        <div class="tab-content" id="nav-tabContent">
-          <div className={"col-sm-6 offset-sm-3"}>
-            {votedDateFrequency.map((vote) => {
-              if (vote.month == selectedMonthToDisplay) {
-                return displayCalendarStat(vote, voteData);
-              }
-            })}
-          </div>
+      <div className="tab-content" id="nav-tabContent">
+        <div className={"col-sm-6 offset-sm-3"}>
+          {votedDateFrequency.map((vote) => {
+            if (vote.month == selectedMonthToDisplay) {
+              return displayCalendarStat(vote, voteData);
+            }
+          })}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
-export default Vote3;
+export default CalendarDisplay;
