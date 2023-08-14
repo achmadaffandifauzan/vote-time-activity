@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./parts/Login";
-import Register from "./parts/Register";
+import Login from "./auth/Login";
+import Register from "./auth/Register";
 import Vote from "./parts/Vote";
 
 const App = () => {
