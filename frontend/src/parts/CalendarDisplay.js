@@ -132,7 +132,7 @@ function CalendarDisplay() {
     <>
       <nav>
         <div
-          className="nav nav-tabs col-sm-6 offset-sm-3"
+          className="nav nav-tabs col-md-6 offset-md-3"
           id="nav-tab"
           role="tablist"
         >
@@ -152,7 +152,7 @@ function CalendarDisplay() {
       </nav>
 
       <div className="tab-content" id="nav-tabContent">
-        <div className={"col-sm-6 offset-sm-3"}>
+        <div className={"col-md-6 offset-md-3"}>
           {votedDateFrequency.map((vote) => {
             if (vote.month == selectedMonthToDisplay) {
               return displayCalendarStat(vote, voteData);

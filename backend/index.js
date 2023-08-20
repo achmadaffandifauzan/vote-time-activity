@@ -31,6 +31,8 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:3000",
+    credentials: true, // Allow credentials (cookies) to be included (for matching session ID from the client and session data from the server), because it use react (with) different port (3000) vs server (3100). in production, it should not be matter.
+    // if disabled, then server cannot identify which user is which
   })
 );
 if (process.env.NODE_ENV !== "production") {
@@ -64,46 +66,70 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 2,
-    maxAge: 1000 * 60 * 60 * 24,
+    expires: Date.now() + 1000 * 60 * 60 * 4,
+    maxAge: 1000 * 60 * 60 * 2,
   },
 };
 app.use(session(sessionConfig));
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use(User.createStrategy());
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-  console.log("ASD");
+  console.log("req.user ===== ", req.user);
   res.locals.currentUser = req.user;
-  console.log("ASD");
   next();
 });
-
+app.get("/api/currentUser", (req, res) => {
+  console.log(req.user);
+  if (!req.isAuthenticated()) {
+    res.status(401);
+    return res.json({
+      message: "Not authenticated!",
+      status: "error",
+    });
+  }
+  res.json({ user: req.user });
+});
 app.post(
   "/api/register",
   catchAsync(async (req, res, next) => {
-    const { email, name, password } = req.body;
+    const { email, username, name, password } = req.body;
     try {
-      const newUser = new User({ email, name });
+      const newUser = new User({ email, username, name });
       const registeredUser = await User.register(newUser, password);
+      //   console.log("registereduser : ", registeredUser);
+      console.log(req.user);
       await newUser.save();
       req.login(registeredUser, (error) => {
+        if (req.isAuthenticated()) {
+          console.log("USER IS LOGGED IN");
+        }
         if (error) return next(error);
-        console.log(newUser);
         res.status(200);
         res.json({
           message: "Successfully Register!",
+          status: "success",
         });
       });
     } catch (error) {
-      res.json({
-        error: error,
-      });
+      console.log(error);
+      if (error.message.includes("E11000")) {
+        res.json({
+          message:
+            "A user with the given username or email is already registered",
+          status: "error",
+        });
+      } else {
+        res.json({
+          message: error.message,
+          status: "error",
+        });
+      }
     }
   })
 );
