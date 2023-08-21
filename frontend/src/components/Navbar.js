@@ -1,9 +1,9 @@
 import React from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const Navbar = () => {
-  //   const navigate = useNavigate();
+const Navbar = ({ flashMessage, setFlashMessage }) => {
+  const navigate = useNavigate();
   const baseURL =
     process.env.NODE_ENV === "production"
       ? window.location.origin // Use the current origin in production
@@ -16,9 +16,14 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       const response = await api.post("/api/logout");
-      console.log("response from logout api req ::::: ", response);
+      if (response.data) {
+        setFlashMessage(response.data);
+      }
+      if (response.data.status === "success") {
+        navigate("/vote");
+      }
     } catch (error) {
-      console.log("error from logout req ::::: ", error);
+      console.log(error);
     }
   };
   return (

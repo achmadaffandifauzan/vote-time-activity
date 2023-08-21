@@ -14,6 +14,7 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 const catchAsync = require("./utils/CatchAsync");
 const cors = require("cors");
+const { isLoggedIn } = require("./middleware");
 
 const dbUrl = process.env.DB_URL;
 mongoose.set("strictQuery", true);
@@ -87,7 +88,6 @@ app.use((req, res, next) => {
 app.get("/api/currentUser", (req, res) => {
   console.log(req.user);
   if (!req.isAuthenticated()) {
-    res.status(401);
     return res.json({
       message: "Not authenticated!",
       status: "error",
@@ -112,7 +112,7 @@ app.post(
         if (error) return next(error);
         res.status(200);
         res.json({
-          message: "Successfully Register!",
+          message: "Successfully Registered!",
           status: "success",
         });
       });
@@ -149,7 +149,7 @@ app.post(
           });
         }
         res.json({
-          message: "Successfully Login!",
+          message: "Successfully logged in!",
           status: "success",
         });
       })(req, res, next);
@@ -172,10 +172,14 @@ app.post(
 );
 app.post(
   "/api/logout",
+  isLoggedIn,
   catchAsync(async (req, res, next) => {
-    console.log("it hit logout route");
-    res.json({
-      message: "hello world",
+    // console.log("it hit logout route");
+    req.logout(async (error) => {
+      if (error) return next(error);
+    });
+    return res.json({
+      message: "Successfully logged out.",
       status: "success",
     });
   })

@@ -39,14 +39,19 @@ function Register({ flashMessage, setFlashMessage }) {
   };
   const getCurrentUser = async (event) => {
     event.preventDefault();
-    const response = await api.get("/api/currentUser");
-    console.log(response);
-    if (response.data) {
-      if (response.data.user) {
-        setCurrentUser(response.data.user);
-      } else {
-        setCurrentUser();
+    try {
+      const response = await api.get("/api/currentUser");
+      console.log(response);
+      if (response.data) {
+        setFlashMessage(response.data);
+        if (response.data.user) {
+          setCurrentUser(response.data.user);
+        } else {
+          setCurrentUser();
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
   };
   useEffect(() => {
