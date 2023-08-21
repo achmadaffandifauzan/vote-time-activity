@@ -1,6 +1,26 @@
 import React from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  //   const navigate = useNavigate();
+  const baseURL =
+    process.env.NODE_ENV === "production"
+      ? window.location.origin // Use the current origin in production
+      : "http://localhost:3100"; // Use localhost in development
+  const api = axios.create({
+    baseURL: baseURL,
+    withCredentials: true, // to include credentials (session cookie)
+    headers: { "Content-Type": "application/json" },
+  });
+  const handleLogout = async () => {
+    try {
+      const response = await api.post("/api/logout");
+      console.log("response from logout api req ::::: ", response);
+    } catch (error) {
+      console.log("error from logout req ::::: ", error);
+    }
+  };
   return (
     <nav
       id="nav"
@@ -33,24 +53,24 @@ const Navbar = () => {
             </a>
           </div>
           <div className="navbar-nav ms-auto">
-            <a className="nav-link navAuth" href="/login">
+            <Link to="/login" className="nav-link m-auto navAuth">
               <span className="me-1">
                 <img src="./login.svg" alt="" />
               </span>
               <span className="spanMaterialSymbol me-3">Login</span>
-            </a>
-            <a className="nav-link navAuth" href="/register">
+            </Link>
+            <Link to="/register" className="nav-link m-auto navAuth">
               <span className="me-1">
                 <img src="./register.svg" alt="" />
               </span>
               <span className="spanMaterialSymbol me-3">Register</span>
-            </a>
-            <a className="nav-link m-auto navAuth" href="/logout">
+            </Link>
+            <button className="nav-link m-auto navAuth" onClick={handleLogout}>
               <span className="me-1">
                 <img src="./logout.svg" alt="" />
               </span>
               <span className="spanMaterialSymbol me-3">Logout</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>

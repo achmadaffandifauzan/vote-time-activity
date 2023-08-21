@@ -1,8 +1,6 @@
 import { React, useState, useEffect, useRef } from "react";
-import Navbar from "../components/Navbar";
 import axios from "axios";
-import Flash from "../components/Flash";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Register({ flashMessage, setFlashMessage }) {
   const [name, setName] = useState("");
@@ -123,7 +121,7 @@ function Register({ flashMessage, setFlashMessage }) {
         </div>
         <button className="btn btn-success mt-3">Register</button>
         <div className="mt-3">
-          Already have an account ? <a href="/login">Login</a>
+          Already have an account ? <Link to="/login">Login</Link>
         </div>
       </form>
     </div>

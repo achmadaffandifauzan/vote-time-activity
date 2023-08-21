@@ -133,7 +133,53 @@ app.post(
     }
   })
 );
-
+app.post(
+  "/api/login",
+  catchAsync(async (req, res, next) => {
+    const { email, password } = req.body;
+    try {
+      passport.authenticate("local", function (err, user, info, status) {
+        if (err) {
+          return next(err);
+        }
+        if (!user) {
+          return res.json({
+            message: "Email or password incorrect!",
+            status: "error",
+          });
+        }
+        res.json({
+          message: "Successfully Login!",
+          status: "success",
+        });
+      })(req, res, next);
+    } catch (error) {
+      console.log(error);
+      if (error.message.includes("E11000")) {
+        res.json({
+          message:
+            "A user with the given username or email is already registered",
+          status: "error",
+        });
+      } else {
+        res.json({
+          message: error.message,
+          status: "error",
+        });
+      }
+    }
+  })
+);
+app.post(
+  "/api/logout",
+  catchAsync(async (req, res, next) => {
+    console.log("it hit logout route");
+    res.json({
+      message: "hello world",
+      status: "success",
+    });
+  })
+);
 app.all("*", (req, res, next) => {
   next(new ExpressError("Not Found!", 404));
 });

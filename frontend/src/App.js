@@ -8,46 +8,35 @@ import Layout from "./Layout";
 const App = () => {
   const [flashMessage, setFlashMessage] = useState();
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/login"
-          exact
-          element={
-            <Layout
-              flashMessage={flashMessage}
-              setFlashMessage={setFlashMessage}
-            >
-              <Login />
-            </Layout>
-          }
-        />
-        <Route
-          path="/register"
-          exact
-          element={
-            <Layout
-              flashMessage={flashMessage}
-              setFlashMessage={setFlashMessage}
-            >
-              <Register />
-            </Layout>
-          }
-        />
-        <Route
-          path="/vote"
-          exact
-          element={
-            <Layout
-              flashMessage={flashMessage}
-              setFlashMessage={setFlashMessage}
-            >
-              <Vote />
-            </Layout>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route
+        path="/login"
+        exact
+        element={
+          <Layout flashMessage={flashMessage} setFlashMessage={setFlashMessage}>
+            <Login />
+          </Layout>
+        }
+      />
+      <Route
+        path="/register"
+        exact
+        element={
+          <Layout flashMessage={flashMessage} setFlashMessage={setFlashMessage}>
+            <Register />
+          </Layout>
+        }
+      />
+      <Route
+        path="/vote"
+        exact
+        element={
+          <Layout flashMessage={flashMessage} setFlashMessage={setFlashMessage}>
+            <Vote />
+          </Layout>
+        }
+      />
+    </Routes>
   );
 };
 

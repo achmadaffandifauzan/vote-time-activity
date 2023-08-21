@@ -1,7 +1,6 @@
 import { React, useEffect, useRef } from "react";
 import { useState } from "react";
 import "./CalendarDisplay.css";
-
 const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const monthsOfYear = [
   "January",
@@ -17,84 +16,14 @@ const monthsOfYear = [
   "November",
   "December",
 ];
-function displayCalendarStat(vote, voteData) {
-  const firstDay = new Date(vote.year, vote.month - 1, 1).getDay();
-  const totalDays = new Date(vote.year, vote.month, 0).getDate();
-  const totalVoters = voteData.length;
-  //   return { firstDay, totalDays };
-  return (
-    <div
-      className="tab-pane fade show active"
-      id={"tabs_" + vote.month}
-      role="tabpanel"
-      aria-labelledby="nav-home-tab"
-      tabIndex="0"
-    >
-      <div className="calendarGrid my-3">
-        {daysOfWeek.map((day) => {
-          return <div className="calendarHeader">{day}</div>;
-        })}
-        {vote.frequencies.map((vote, i) => {
-          return (
-            <div
-              onMouseEnter={(e) => {
-                if (e.target.querySelector(".badgeVoters")) {
-                  document.querySelectorAll(".badgeVoters").forEach((badge) => {
-                    return (badge.style.display = "inline");
-                  });
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (e.target.querySelector(".badgeVoters")) {
-                  document.querySelectorAll(".badgeVoters").forEach((badge) => {
-                    return (badge.style.display = "none");
-                  });
-                }
-              }}
-              className={(() => {
-                let className = "calendarMain ";
-                if (i == 0) {
-                  className = className + "firstDay_" + firstDay;
-                }
-                className =
-                  className +
-                  " bg_color_red_" +
-                  Math.round((vote / totalVoters) * 10);
-                return className;
-              })()}
-            >
-              <span>{i + 1}</span>
-              {vote > 0 ? (
-                <span
-                  style={{ display: "none" }}
-                  className="badge badgeVoters bg-success mx-1"
-                >
-                  {vote}
-                </span>
-              ) : (
-                ""
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-// console.log(displayCalendarStat(2023, 9));
-
-function CalendarDisplay() {
+function CalendarDisplay({ flashMessage, setFlashMessage }) {
   const [selectedMonthToDisplay, setSelectedMonthToDisplay] = useState();
   useEffect(() => {
     // automatically select a month to display on after page load
-    return () => {
-      if (votedDateFrequency) {
-        document
-          .querySelectorAll(".nav-link-months")[0]
-          .classList.add("active");
-        setSelectedMonthToDisplay(votedDateFrequency[0].month);
-      }
-    };
+    if (votedDateFrequency) {
+      document.querySelectorAll(".nav-link-months")[0].classList.add("active");
+      setSelectedMonthToDisplay(votedDateFrequency[0].month);
+    }
   }, []);
   const [votedDateFrequency, setVotedDateFrequency] = useState([
     {
@@ -128,6 +57,74 @@ function CalendarDisplay() {
     { contributor: "user11", voted: ["2023-08-11", "2023-08-13"] },
     { contributor: "user12", voted: ["2023-08-12", "2023-08-14"] },
   ]);
+  const displayCalendarStat = (vote, voteData) => {
+    const firstDay = new Date(vote.year, vote.month - 1, 1).getDay();
+    const totalDays = new Date(vote.year, vote.month, 0).getDate();
+    const totalVoters = voteData.length;
+    //   return { firstDay, totalDays };
+    return (
+      <div
+        className="tab-pane fade show active"
+        id={"tabs_" + vote.month}
+        role="tabpanel"
+        aria-labelledby="nav-home-tab"
+        tabIndex="0"
+      >
+        <div className="calendarGrid my-3">
+          {daysOfWeek.map((day) => {
+            return <div className="calendarHeader">{day}</div>;
+          })}
+          {vote.frequencies.map((vote, i) => {
+            return (
+              <div
+                onMouseEnter={(e) => {
+                  if (e.target.querySelector(".badgeVoters")) {
+                    document
+                      .querySelectorAll(".badgeVoters")
+                      .forEach((badge) => {
+                        return (badge.style.display = "inline");
+                      });
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (e.target.querySelector(".badgeVoters")) {
+                    document
+                      .querySelectorAll(".badgeVoters")
+                      .forEach((badge) => {
+                        return (badge.style.display = "none");
+                      });
+                  }
+                }}
+                className={(() => {
+                  let className = "calendarMain ";
+                  if (i == 0) {
+                    className = className + "firstDay_" + firstDay;
+                  }
+                  className =
+                    className +
+                    " bg_color_red_" +
+                    Math.round((vote / totalVoters) * 10);
+                  return className;
+                })()}
+              >
+                <span>{i + 1}</span>
+                {vote > 0 ? (
+                  <span
+                    style={{ display: "none" }}
+                    className="badge badgeVoters bg-success mx-1"
+                  >
+                    {vote}
+                  </span>
+                ) : (
+                  ""
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
   return (
     <>
       <nav>
