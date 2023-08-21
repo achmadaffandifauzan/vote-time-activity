@@ -135,10 +135,14 @@ body {
   align-items: center;
   display: flex;
   text-align: center;
-  border: 2px solid #ffffff00;
-  padding: 10px 5px !important;
+  padding: 5px 5px !important;
 }
-
+.navAuth img {
+  width: 24px !important;
+  /* convert color to white */
+  filter: invert(83%) sepia(100%) saturate(1%) hue-rotate(348deg)
+    brightness(108%) contrast(102%);
+}
 .navAuth span {
   display: flex;
   line-height: 10px;

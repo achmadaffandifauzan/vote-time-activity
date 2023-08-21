@@ -2,7 +2,7 @@ import React from "react";
 import "./Flash.css";
 const Flash = (props) => {
   const { message, deleteFlashState } = props;
-  console.log("from FLASH component.....", message);
+  //   console.log("from FLASH component.....", message);
   if (message.status === "error") {
     return (
       <div

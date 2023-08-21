@@ -1,15 +1,24 @@
+import { useEffect, useState } from "react";
 import CalendarSelect from "./CalendarSelect";
 import CalendarDisplay from "./CalendarDisplay";
 import Navbar from "../components/Navbar";
-const Vote = () => {
+import Flash from "../components/Flash";
+import { useLocation } from "react-router-dom";
+const Vote = ({ flashMessage, setFlashMessage }) => {
+  useEffect(() => {
+    return () => {
+      if (flashMessage) {
+        setFlashMessage(flashMessage);
+        flashMessage = {};
+      }
+    };
+  }, []);
+
   return (
-    <div className="mainPage">
-      <Navbar />
-      <div className="container-xxl">
-        <CalendarDisplay />
-        <CalendarSelect />
-      </div>
-    </div>
+    <>
+      <CalendarDisplay />
+      <CalendarSelect />
+    </>
   );
 };
 

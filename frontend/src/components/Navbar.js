@@ -34,17 +34,21 @@ const Navbar = () => {
           </div>
           <div className="navbar-nav ms-auto">
             <a className="nav-link navAuth" href="/login">
-              <span className="material-symbols-rounded me-1">login</span>
+              <span className="me-1">
+                <img src="./login.svg" alt="" />
+              </span>
               <span className="spanMaterialSymbol me-3">Login</span>
             </a>
             <a className="nav-link navAuth" href="/register">
-              <span className="material-symbols-rounded me-1">
-                app_registration
+              <span className="me-1">
+                <img src="./register.svg" alt="" />
               </span>
               <span className="spanMaterialSymbol me-3">Register</span>
             </a>
             <a className="nav-link m-auto navAuth" href="/logout">
-              <span className="material-symbols-rounded me-1">logout</span>
+              <span className="me-1">
+                <img src="./logout.svg" alt="" />
+              </span>
               <span className="spanMaterialSymbol me-3">Logout</span>
             </a>
           </div>
