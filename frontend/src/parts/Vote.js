@@ -4,8 +4,14 @@ import CalendarDisplay from "./CalendarDisplay";
 const Vote = ({ flashMessage, setFlashMessage }) => {
   return (
     <>
-      <CalendarDisplay />
-      <CalendarSelect />
+      <CalendarDisplay
+        flashMessage={flashMessage}
+        setFlashMessage={setFlashMessage}
+      />
+      <CalendarSelect
+        flashMessage={flashMessage}
+        setFlashMessage={setFlashMessage}
+      />
     </>
   );
 };

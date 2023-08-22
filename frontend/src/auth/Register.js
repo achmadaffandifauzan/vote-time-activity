@@ -30,22 +30,18 @@ function Register({ flashMessage, setFlashMessage }) {
       if (response.data) {
         setFlashMessage(response.data);
       }
-      if (response.data.status === "success") {
+      if (response.data.flash === "success") {
         navigate("/vote");
       }
     } catch (error) {
-      console.log(error);
+      if (error.response.data) {
+        setFlashMessage(error.response.data);
+      }
     }
   };
-  const getCurrentUser = async (event) => {
-    event.preventDefault();
+  const getCurrentUser = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3100/api/currentUser",
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.get("/api/currentUser");
       console.log(response);
       if (response.data) {
         setFlashMessage(response.data);
@@ -64,9 +60,6 @@ function Register({ flashMessage, setFlashMessage }) {
   // }, [currentUser]);
   return (
     <div className="col-md-4 offset-md-4 text-center formContainer my-5">
-      <button onClick={getCurrentUser} className="btn btn-success mt-3">
-        Get Current User
-      </button>
       <h2 className="my-4">Register</h2>
       <form onSubmit={registerUser} className="needs-validation formAuth">
         <div className="form-group mb-3">

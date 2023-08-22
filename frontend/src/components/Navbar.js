@@ -19,11 +19,13 @@ const Navbar = ({ flashMessage, setFlashMessage }) => {
       if (response.data) {
         setFlashMessage(response.data);
       }
-      if (response.data.status === "success") {
+      if (response.data.flash === "success") {
         navigate("/vote");
       }
     } catch (error) {
-      console.log(error);
+      if (error.response.data) {
+        setFlashMessage(error.response.data);
+      }
     }
   };
   return (

@@ -83,19 +83,11 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-  console.log("req.user ===== ", req.user);
   res.locals.currentUser = req.user;
   next();
 });
-app.get("/api/currentUser", (req, res) => {
-  console.log(req.user);
-  if (!req.isAuthenticated()) {
-    return res.json({
-      message: "Not authenticated!",
-      status: "error",
-    });
-  }
-  res.json({ user: req.user });
+app.get("/api/currentUser", isLoggedIn, (req, res) => {
+  return res.json({ user: req.user });
 });
 app.post(
   "/api/register",
@@ -104,8 +96,6 @@ app.post(
     try {
       const newUser = new User({ email, username, name });
       const registeredUser = await User.register(newUser, password);
-      //   console.log("registereduser : ", registeredUser);
-      console.log(req.user);
       await newUser.save();
       req.login(registeredUser, (error) => {
         if (req.isAuthenticated()) {
@@ -115,7 +105,7 @@ app.post(
         res.status(200);
         res.json({
           message: "Successfully Registered!",
-          status: "success",
+          flash: "success",
         });
       });
     } catch (error) {
@@ -124,12 +114,12 @@ app.post(
         res.json({
           message:
             "A user with the given username or email is already registered",
-          status: "error",
+          flash: "error",
         });
       } else {
         res.json({
           message: error.message,
-          status: "error",
+          flash: "error",
         });
       }
     }
@@ -141,7 +131,7 @@ app.post(
   catchAsync(async (req, res, next) => {
     res.json({
       message: "Successfully logged in!",
-      status: "success",
+      flash: "success",
     });
   })
 );
@@ -155,7 +145,7 @@ app.post(
     });
     return res.json({
       message: "Successfully logged out.",
-      status: "success",
+      flash: "success",
     });
   })
 );
@@ -168,7 +158,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode);
   res.json({
     message: err.message,
-    error: err,
+    flash: "error",
   });
 });
 const PORT = process.env.PORT || 3100;

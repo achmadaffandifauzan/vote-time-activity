@@ -24,19 +24,19 @@ function Login({ flashMessage, setFlashMessage }) {
       if (response.data) {
         setFlashMessage(response.data);
       }
-      if (response.data.status === "success") {
+      if (response.data.flash === "success") {
         navigate("/vote");
       }
     } catch (error) {
       if (error.response.status === 401) {
         setFlashMessage({
           message: "Email or password incorrect",
-          status: "error",
+          flash: "error",
         });
       } else {
         setFlashMessage({
           message: error.response.data,
-          status: "error",
+          flash: "error",
         });
       }
     }

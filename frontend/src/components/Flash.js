@@ -3,7 +3,7 @@ import "./Flash.css";
 const Flash = (props) => {
   const { message, deleteFlashState } = props;
   //   console.log("from FLASH component.....", message);
-  if (message.status === "error") {
+  if (message.flash === "error") {
     return (
       <div
         className="alert alert-danger alert-dismissible fade show"
@@ -19,7 +19,7 @@ const Flash = (props) => {
         ></button>
       </div>
     );
-  } else if (message.status === "success") {
+  } else if (message.flash === "success") {
     return (
       <div
         className="alert alert-success alert-dismissible fade show"
