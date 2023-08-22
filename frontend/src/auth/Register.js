@@ -40,7 +40,12 @@ function Register({ flashMessage, setFlashMessage }) {
   const getCurrentUser = async (event) => {
     event.preventDefault();
     try {
-      const response = await api.get("/api/currentUser");
+      const response = await axios.get(
+        "http://localhost:3100/api/currentUser",
+        {
+          withCredentials: true,
+        }
+      );
       console.log(response);
       if (response.data) {
         setFlashMessage(response.data);
@@ -54,9 +59,9 @@ function Register({ flashMessage, setFlashMessage }) {
       console.log(error);
     }
   };
-  useEffect(() => {
-    console.log(currentUser);
-  }, [currentUser]);
+  // useEffect(() => {
+  //   console.log("currentUser is :::: ",currentUser);
+  // }, [currentUser]);
   return (
     <div className="col-md-4 offset-md-4 text-center formContainer my-5">
       <button onClick={getCurrentUser} className="btn btn-success mt-3">

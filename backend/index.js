@@ -32,8 +32,10 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:3000",
+    methods: "GET,POST",
+    // preflightContinue: true,
     credentials: true, // Allow credentials (cookies) to be included (for matching session ID from the client and session data from the server), because it use react (with) different port (3000) vs server (3100). in production, it should not be matter.
-    // if disabled, then server cannot identify which user is which
+    // if disabled, req headers ommited (then meybe server cannot identify which user is which)
   })
 );
 if (process.env.NODE_ENV !== "production") {
@@ -66,7 +68,7 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: true,
   cookie: {
-    httpOnly: true,
+    httpOnly: false,
     expires: Date.now() + 1000 * 60 * 60 * 4,
     maxAge: 1000 * 60 * 60 * 2,
   },
@@ -135,39 +137,12 @@ app.post(
 );
 app.post(
   "/api/login",
+  passport.authenticate("local"),
   catchAsync(async (req, res, next) => {
-    const { email, password } = req.body;
-    try {
-      passport.authenticate("local", function (err, user, info, status) {
-        if (err) {
-          return next(err);
-        }
-        if (!user) {
-          return res.json({
-            message: "Email or password incorrect!",
-            status: "error",
-          });
-        }
-        res.json({
-          message: "Successfully logged in!",
-          status: "success",
-        });
-      })(req, res, next);
-    } catch (error) {
-      console.log(error);
-      if (error.message.includes("E11000")) {
-        res.json({
-          message:
-            "A user with the given username or email is already registered",
-          status: "error",
-        });
-      } else {
-        res.json({
-          message: error.message,
-          status: "error",
-        });
-      }
-    }
+    res.json({
+      message: "Successfully logged in!",
+      status: "success",
+    });
   })
 );
 app.post(

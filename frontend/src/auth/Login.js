@@ -28,7 +28,17 @@ function Login({ flashMessage, setFlashMessage }) {
         navigate("/vote");
       }
     } catch (error) {
-      console.log(error);
+      if (error.response.status === 401) {
+        setFlashMessage({
+          message: "Email or password incorrect",
+          status: "error",
+        });
+      } else {
+        setFlashMessage({
+          message: error.response.data,
+          status: "error",
+        });
+      }
     }
   };
   return (
