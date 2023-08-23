@@ -2,14 +2,18 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const votingAgendaSchema = new Schema({
-  year: {
-    type: String,
-    required: true,
-  },
-  month: {
-    type: String,
-    required: true,
-  },
+  years: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  months: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   votingResults: {
     type: Schema.Types.ObjectId,
     ref: "VotingResult",

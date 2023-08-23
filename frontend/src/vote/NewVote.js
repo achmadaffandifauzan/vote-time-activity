@@ -1,20 +1,58 @@
 import { React, useEffect, useRef } from "react";
 import { useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import DatePicker from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import "react-multi-date-picker/styles/layouts/mobile.css";
-import opacity from "react-element-popper/animations/opacity";
-
+import axios from "axios";
+const baseURL =
+  process.env.NODE_ENV === "production"
+    ? window.location.origin // Use the current origin in production
+    : "http://localhost:3100"; // Use localhost in development
+const api = axios.create({
+  baseURL: baseURL,
+  withCredentials: true, // to include credentials (session cookie)
+  headers: { "Content-Type": "application/json" },
+});
 const NewVote = ({ flashMessage, setFlashMessage }) => {
   const [selectedDates, setSelectedDates] = useState([]);
+  const [allowMultipleDateVotes, setAllowMultipleDateVotes] = useState("no");
+  function removeDuplicates(arr) {
+    return arr.filter((item, index) => arr.indexOf(item) === index);
+  }
   const handleSubmit = (event) => {
     event.preventDefault();
-    alert(`tes`);
+    const convertedDates = selectedDates.map((date) => {
+      return date.format("DD-MM-YYYY");
+    });
+    if (convertedDates.length < 2) {
+      setFlashMessage({
+        message: "You need to select at least two dates to create a vote.",
+        flash: "error",
+      });
+      return null;
+    }
+    // months and years are needed in db schema, and tools to get it are within DatePicker packeage, so better to convert it here (client side)
+    const months = removeDuplicates(
+      selectedDates.map((date) => {
+        return date.format("MM");
+      })
+    );
+    const years = removeDuplicates(
+      selectedDates.map((date) => {
+        return date.format("YYYY");
+      })
+    );
+
+    console.log(convertedDates, months, years);
+    console.log("allowMultipleDateVotes", allowMultipleDateVotes);
+    alert("tes");
+    // try {
+    //     api.post()
+    // } catch (error) {
+
+    // }
   };
   function handleChange(selectedDates) {
-    //your modification on passed selectedDates ....
     setSelectedDates(selectedDates);
   }
   //   useEffect(() => {
@@ -23,11 +61,19 @@ const NewVote = ({ flashMessage, setFlashMessage }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="my-3 d-flex flex-column col-md-6 offset-md-3">
+        <h5 className="fw-bold text-center mb-3 color-VoteSchedule">
+          Create a Voting
+        </h5>
         <div className="mb-3">
-          <label for="title" className="form-label mb-1 text-muted">
+          <label htmlFor="title" className="form-label mb-1 text-muted">
             Voting title
           </label>
-          <input type="text" className="form-control " id="title"></input>
+          <input
+            type="text"
+            className="form-control "
+            id="title"
+            required
+          ></input>
         </div>
 
         <DatePicker
@@ -55,21 +101,27 @@ const NewVote = ({ flashMessage, setFlashMessage }) => {
           >
             Allow multiple date votes
           </label>
-          <select class="form-select" id="allowMultipleVote">
+          <select
+            onChange={(e) => setAllowMultipleDateVotes(e.target.value)}
+            className="form-select"
+            id="allowMultipleVote"
+            defaultValue={allowMultipleDateVotes}
+          >
             <option value="yes">Allow</option>
-            <option value="no" selected>
-              Don't allow
-            </option>
+            <option value="no">Don't allow</option>
           </select>
         </div>
+        <button className="btn btn-success btnNewCustom my-3">
+          Generate link to vote
+        </button>
       </div>
     </form>
   );
 };
 function CustomMultipleInput({ onFocus, value }) {
   return (
-    <div class="mb-3">
-      <label for="datePicker" className="form-label mb-1 text-muted">
+    <div className="mb-3">
+      <label htmlFor="datePicker" className="form-label mb-1 text-muted">
         Select dates for voting
       </label>
       <input

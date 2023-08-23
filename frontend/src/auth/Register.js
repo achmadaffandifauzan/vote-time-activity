@@ -1,22 +1,22 @@
 import { React, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-
+const baseURL =
+  process.env.NODE_ENV === "production"
+    ? window.location.origin // Use the current origin in production
+    : "http://localhost:3100"; // Use localhost in development
+const api = axios.create({
+  baseURL: baseURL,
+  withCredentials: true, // to include credentials (session cookie)
+  headers: { "Content-Type": "application/json" },
+});
 function Register({ flashMessage, setFlashMessage }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const baseURL =
-    process.env.NODE_ENV === "production"
-      ? window.location.origin // Use the current origin in production
-      : "http://localhost:3100"; // Use localhost in development
-  const api = axios.create({
-    baseURL: baseURL,
-    withCredentials: true, // to include credentials (session cookie)
-    headers: { "Content-Type": "application/json" },
-  });
+
   const registerUser = async (event) => {
     event.preventDefault();
     try {
@@ -102,7 +102,7 @@ function Register({ flashMessage, setFlashMessage }) {
           ></input>
           <div className="invalid-feedback">Add password!</div>
         </div>
-        <button className="btn btn-success mt-3">Register</button>
+        <button className="btn btn-success btnNewCustom mt-3">Register</button>
         <div className="mt-3">
           Already have an account ? <Link to="/login">Login</Link>
         </div>

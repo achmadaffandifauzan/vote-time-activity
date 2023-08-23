@@ -1,19 +1,20 @@
 import { React, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+const baseURL =
+  process.env.NODE_ENV === "production"
+    ? window.location.origin // Use the current origin in production
+    : "http://localhost:3100"; // Use localhost in development
+const api = axios.create({
+  baseURL: baseURL,
+  withCredentials: true, // to include credentials (session cookie)
+  headers: { "Content-Type": "application/json" },
+});
 function Login({ flashMessage, setFlashMessage }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const baseURL =
-    process.env.NODE_ENV === "production"
-      ? window.location.origin // Use the current origin in production
-      : "http://localhost:3100"; // Use localhost in development
-  const api = axios.create({
-    baseURL: baseURL,
-    withCredentials: true, // to include credentials (session cookie)
-    headers: { "Content-Type": "application/json" },
-  });
+
   const loginUser = async (event) => {
     event.preventDefault();
     try {
@@ -77,7 +78,7 @@ function Login({ flashMessage, setFlashMessage }) {
           ></input>
           <div className="invalid-feedback">Input password!</div>
         </div>
-        <button className="btn btn-success mt-4">Login</button>
+        <button className="btn btn-success btnNewCustom mt-4">Login</button>
       </form>
       <div className="mt-3">
         Don't have an account ? <Link to="/register">Register</Link>
