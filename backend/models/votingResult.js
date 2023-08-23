@@ -474,4 +474,4 @@ const votingResultSchema = new Schema({
   ],
 });
 
-module.export = mongoose.model("VotingResult", votingResultSchema);
+module.exports = mongoose.model("VotingResult", votingResultSchema);

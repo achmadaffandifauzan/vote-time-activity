@@ -8,13 +8,14 @@ const path = require("path");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const mongoSanitize = require("express-mongo-sanitize");
-const ExpressError = require("./utils/ExpressError");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const User = require("./models/user");
-const catchAsync = require("./utils/CatchAsync");
 const cors = require("cors");
 const { isLoggedIn } = require("./middleware");
+const ExpressError = require("./utils/ExpressError");
+const catchAsync = require("./utils/CatchAsync");
+const User = require("./models/user");
+const VotingAgenda = require("./models/votingAgenda");
 
 const dbUrl = process.env.DB_URL;
 mongoose.set("strictQuery", true);
@@ -139,7 +140,6 @@ app.post(
   "/api/logout",
   isLoggedIn,
   catchAsync(async (req, res, next) => {
-    // console.log("it hit logout route");
     req.logout(async (error) => {
       if (error) return next(error);
     });
@@ -147,6 +147,28 @@ app.post(
       message: "Successfully logged out.",
       flash: "success",
     });
+  })
+);
+app.post(
+  "/api/createVoting",
+  isLoggedIn,
+  catchAsync(async (req, res, next) => {
+    const { dates, months, years, allowMultipleDateVotes } = req.body;
+    try {
+      const agenda = new VotingAgenda({
+        dates,
+        months,
+        years,
+        allowMultipleDateVotes,
+      });
+      await agenda.save();
+      return res.json({
+        message: "Successfully created",
+        flash: "success",
+      });
+    } catch (error) {
+      return next(error);
+    }
   })
 );
 app.all("*", (req, res, next) => {

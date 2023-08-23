@@ -1,4 +1,5 @@
 import { React, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
@@ -15,42 +16,55 @@ const api = axios.create({
 });
 const NewVote = ({ flashMessage, setFlashMessage }) => {
   const [selectedDates, setSelectedDates] = useState([]);
-  const [allowMultipleDateVotes, setAllowMultipleDateVotes] = useState("no");
+  const [allowMultipleDateVotes, setAllowMultipleDateVotes] = useState(false);
+  const navigate = useNavigate();
   function removeDuplicates(arr) {
     return arr.filter((item, index) => arr.indexOf(item) === index);
   }
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const convertedDates = selectedDates.map((date) => {
-      return date.format("DD-MM-YYYY");
-    });
-    if (convertedDates.length < 2) {
-      setFlashMessage({
-        message: "You need to select at least two dates to create a vote.",
-        flash: "error",
+    try {
+      const dates = selectedDates.map((date) => {
+        return date.format("DD-MM-YYYY");
       });
-      return null;
+      if (dates.length < 2) {
+        setFlashMessage({
+          message: "You need to select at least two dates to create a vote.",
+          flash: "error",
+        });
+        return null;
+      }
+      // months and years are needed in db schema, and tools to get it are within DatePicker packeage, so better to convert it here (client side)
+      const months = removeDuplicates(
+        selectedDates.map((date) => {
+          return date.format("MM");
+        })
+      );
+      const years = removeDuplicates(
+        selectedDates.map((date) => {
+          return date.format("YYYY");
+        })
+      );
+
+      console.log(dates, months, years);
+      console.log("allowMultipleDateVotes", allowMultipleDateVotes);
+      // alert("tes");
+
+      const response = await api.post("/api/createVoting", {
+        dates,
+        months,
+        years,
+        allowMultipleDateVotes,
+      });
+      if (response.data) {
+        setFlashMessage(response.data);
+      }
+      if (response.data.flash === "success") {
+        navigate("/vote");
+      }
+    } catch (error) {
+      console.log("error api response :::", error);
     }
-    // months and years are needed in db schema, and tools to get it are within DatePicker packeage, so better to convert it here (client side)
-    const months = removeDuplicates(
-      selectedDates.map((date) => {
-        return date.format("MM");
-      })
-    );
-    const years = removeDuplicates(
-      selectedDates.map((date) => {
-        return date.format("YYYY");
-      })
-    );
-
-    console.log(convertedDates, months, years);
-    console.log("allowMultipleDateVotes", allowMultipleDateVotes);
-    alert("tes");
-    // try {
-    //     api.post()
-    // } catch (error) {
-
-    // }
   };
   function handleChange(selectedDates) {
     setSelectedDates(selectedDates);
@@ -107,8 +121,8 @@ const NewVote = ({ flashMessage, setFlashMessage }) => {
             id="allowMultipleVote"
             defaultValue={allowMultipleDateVotes}
           >
-            <option value="yes">Allow</option>
-            <option value="no">Don't allow</option>
+            <option value={true}>Allow</option>
+            <option value={false}>Don't allow</option>
           </select>
         </div>
         <button className="btn btn-success btnNewCustom my-3">

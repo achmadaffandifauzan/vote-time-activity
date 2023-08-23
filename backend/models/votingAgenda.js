@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const votingAgendaSchema = new Schema({
+  // years and months are help to display vote result in calendar format
   years: [
     {
       type: String,
@@ -14,10 +15,20 @@ const votingAgendaSchema = new Schema({
       required: true,
     },
   ],
+  dates: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   votingResults: {
     type: Schema.Types.ObjectId,
     ref: "VotingResult",
   },
+  allowMultipleDateVotes: {
+    type: Boolean,
+    required: true,
+  },
 });
 
-module.export = mongoose.model("VotingAgenda", votingAgendaSchema);
+module.exports = mongoose.model("VotingAgenda", votingAgendaSchema);
