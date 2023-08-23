@@ -5,6 +5,7 @@ import Register from "./auth/Register";
 import Vote from "./parts/Vote";
 import Layout from "./Layout";
 import axios from "axios";
+import NewVote from "./vote/NewVote";
 const baseURL =
   process.env.NODE_ENV === "production"
     ? window.location.origin // Use the current origin in production
@@ -24,7 +25,6 @@ const App = () => {
   const getCurrentUser = async () => {
     try {
       const response = await api.get("/api/currentUser");
-      console.log(response);
       if (response.data) {
         if (response.data.user) {
           setCurrentUser(response.data.user);
@@ -69,6 +69,16 @@ const App = () => {
             exact
             element={
               <Vote
+                flashMessage={flashMessage}
+                setFlashMessage={setFlashMessage}
+              />
+            }
+          />
+          <Route
+            path="/create"
+            exact
+            element={
+              <NewVote
                 flashMessage={flashMessage}
                 setFlashMessage={setFlashMessage}
               />

@@ -152,6 +152,9 @@ app.post(
 app.all("*", (req, res, next) => {
   next(new ExpressError("Not Found!", 404));
 });
+
+// accepting error from express error, middleware (next(error)), or anywhere else
+// then pass it to client as error object with message (in json)
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   if (!err.message) err.message = "Something Went Wrong!";

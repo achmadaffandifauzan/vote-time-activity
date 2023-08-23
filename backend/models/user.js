@@ -17,6 +17,14 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
+  votes: [
+    // not his exact vote, but the agenda that he voted on
+    // because there is no model of individual vote
+    {
+      type: Schema.Types.ObjectId,
+      ref: "VotingAgenda",
+    },
+  ],
 });
 const options = {
   usernameField: "email",

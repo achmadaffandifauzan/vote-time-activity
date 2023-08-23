@@ -41,8 +41,10 @@ function CalendarSelect() {
         } ${nextValue.getFullYear()}`
       );
       if (times.includes(selectedDateConverted)) {
+        // if nextValue exist, then remove
         setTimes(times.filter((curr) => curr !== selectedDateConverted));
       } else {
+        // if nextValue does not exist, then add
         setTimes([...times, selectedDateConverted]);
       }
     } catch (error) {

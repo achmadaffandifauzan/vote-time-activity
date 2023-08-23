@@ -7,7 +7,6 @@ function Register({ flashMessage, setFlashMessage }) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [currentUser, setCurrentUser] = useState();
   const navigate = useNavigate();
   const baseURL =
     process.env.NODE_ENV === "production"
@@ -39,25 +38,6 @@ function Register({ flashMessage, setFlashMessage }) {
       }
     }
   };
-  const getCurrentUser = async () => {
-    try {
-      const response = await api.get("/api/currentUser");
-      console.log(response);
-      if (response.data) {
-        setFlashMessage(response.data);
-        if (response.data.user) {
-          setCurrentUser(response.data.user);
-        } else {
-          setCurrentUser();
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  // useEffect(() => {
-  //   console.log("currentUser is :::: ",currentUser);
-  // }, [currentUser]);
   return (
     <div className="col-md-4 offset-md-4 text-center formContainer my-5">
       <h2 className="my-4">Register</h2>
