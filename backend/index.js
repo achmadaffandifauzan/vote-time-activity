@@ -155,16 +155,30 @@ app.post(
   catchAsync(async (req, res, next) => {
     const { dates, months, years, allowMultipleDateVotes } = req.body;
     try {
-      const agenda = new VotingAgenda({
+      const votingAgenda = new VotingAgenda({
         dates,
         months,
         years,
         allowMultipleDateVotes,
       });
-      await agenda.save();
+      await votingAgenda.save();
       return res.json({
         message: "Successfully created",
         flash: "success",
+        redirectData: `${votingAgenda._id}`,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  })
+);
+app.get(
+  "/api/vote/:id",
+  catchAsync(async (req, res, next) => {
+    try {
+      const votingAgenda = await VotingAgenda.findById(req.params.id);
+      return res.json({
+        votingAgenda,
       });
     } catch (error) {
       return next(error);

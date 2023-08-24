@@ -16,8 +16,7 @@ const monthsOfYear = [
   "November",
   "December",
 ];
-function CalendarDisplay({ flashMessage, setFlashMessage }) {
-  const [selectedMonthToDisplay, setSelectedMonthToDisplay] = useState();
+function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
   useEffect(() => {
     // automatically select a month to display on after page load
     if (votedDateFrequency) {

@@ -65,8 +65,7 @@ const App = () => {
             }
           />
           <Route
-            path="/vote"
-            exact
+            path="/vote/:voteId"
             element={
               <Vote
                 flashMessage={flashMessage}
