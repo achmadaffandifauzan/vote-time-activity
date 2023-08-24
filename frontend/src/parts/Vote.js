@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CalendarSelect from "./CalendarSelect";
 import CalendarDisplay from "./CalendarDisplay";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 const baseURL =
   process.env.NODE_ENV === "production"
@@ -12,32 +12,42 @@ const api = axios.create({
   withCredentials: true, // to include credentials (session cookie)
   headers: { "Content-Type": "application/json" },
 });
-const Vote = async ({ flashMessage, setFlashMessage }) => {
+const Vote = ({ flashMessage, setFlashMessage }) => {
   const [votingAgenda, setVotingAgenda] = useState();
   const { voteId } = useParams();
-  try {
-    const response = await api.get(`/api/vote/${voteId}`);
-    console.log("response:::", response);
-    setVotingAgenda(response.data.votingAgenda);
-  } catch (error) {
-    setFlashMessage({
-      message: error.response.data,
-      flash: "error",
-    });
+  const navigate = useNavigate();
+  const getVotingAgenda = async () => {
+    try {
+      const response = await api.get(`/api/vote/${voteId}`);
+      setVotingAgenda(response.data.votingAgenda);
+    } catch (error) {
+      setFlashMessage({
+        message: error.response.data.message,
+        flash: "error",
+      });
+      navigate("/");
+    }
+  };
+  useEffect(() => {
+    getVotingAgenda();
+  }, []);
+  if (votingAgenda) {
+    return (
+      <>
+        <CalendarDisplay
+          flashMessage={flashMessage}
+          setFlashMessage={setFlashMessage}
+          votingAgenda={votingAgenda}
+        />
+        <CalendarSelect
+          flashMessage={flashMessage}
+          setFlashMessage={setFlashMessage}
+        />
+      </>
+    );
+  } else {
+    <div>Loading...</div>;
   }
-  return (
-    <>
-      <CalendarDisplay
-        flashMessage={flashMessage}
-        setFlashMessage={setFlashMessage}
-        votingAgenda={votingAgenda}
-      />
-      <CalendarSelect
-        flashMessage={flashMessage}
-        setFlashMessage={setFlashMessage}
-      />
-    </>
-  );
 };
 
 export default Vote;

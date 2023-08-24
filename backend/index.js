@@ -16,6 +16,7 @@ const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/CatchAsync");
 const User = require("./models/user");
 const VotingAgenda = require("./models/votingAgenda");
+const VotingResult = require("./models/votingResult");
 
 const dbUrl = process.env.DB_URL;
 mongoose.set("strictQuery", true);
@@ -153,14 +154,21 @@ app.post(
   "/api/createVoting",
   isLoggedIn,
   catchAsync(async (req, res, next) => {
-    const { dates, months, years, allowMultipleDateVotes } = req.body;
+    const { dates, monthsWithYear, allowMultipleDateVotes } = req.body;
     try {
       const votingAgenda = new VotingAgenda({
         dates,
-        months,
-        years,
+        monthsWithYear,
         allowMultipleDateVotes,
+        totalVote: 0,
       });
+      for (let month of monthsWithYear) {
+        const votingResult = new VotingResult();
+        votingResult.monthWithYear = month;
+        votingResult.votingAgenda = votingAgenda;
+        votingAgenda.votingResults.push(votingResult);
+        await votingResult.save();
+      }
       await votingAgenda.save();
       return res.json({
         message: "Successfully created",
@@ -176,7 +184,10 @@ app.get(
   "/api/vote/:id",
   catchAsync(async (req, res, next) => {
     try {
-      const votingAgenda = await VotingAgenda.findById(req.params.id);
+      const votingAgenda = await VotingAgenda.findById(req.params.id).populate(
+        "votingResults"
+      );
+      if (!votingAgenda) return next(new ExpressError("Not Found!", 404));
       return res.json({
         votingAgenda,
       });

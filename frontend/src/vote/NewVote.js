@@ -34,36 +34,29 @@ const NewVote = ({ flashMessage, setFlashMessage }) => {
         });
         return null;
       }
-      // months and years are needed in db schema, and tools to get it are within DatePicker packeage, so better to convert it here (client side)
-      const months = removeDuplicates(
+      // months and years are needed in db schema (later needed to display custom calendar), and tools to get it are within DatePicker packeage, so better to convert it here (client side)
+      const monthsWithYear = removeDuplicates(
         selectedDates.map((date) => {
-          return date.format("MM");
+          return date.format("MM-YYYY");
         })
       );
-      const years = removeDuplicates(
-        selectedDates.map((date) => {
-          return date.format("YYYY");
-        })
-      );
-
-      console.log(dates, months, years);
-      console.log("allowMultipleDateVotes", allowMultipleDateVotes);
-      // alert("tes");
-
       const response = await api.post("/api/createVoting", {
         dates,
-        months,
-        years,
+        monthsWithYear,
         allowMultipleDateVotes,
       });
       if (response.data) {
         setFlashMessage(response.data);
       }
       if (response.data.flash === "success") {
-        navigate("/vote");
+        navigate(`/vote/${response.data.redirectData}`);
       }
     } catch (error) {
-      console.log("error api response :::", error);
+      console.log(error);
+      setFlashMessage({
+        message: error.response.data.message,
+        flash: "error",
+      });
     }
   };
   function handleChange(selectedDates) {
