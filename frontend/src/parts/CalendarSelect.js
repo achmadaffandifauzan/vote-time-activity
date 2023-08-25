@@ -1,112 +1,125 @@
 import { React, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-const daysOfWeek = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-const monthsOfYear = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-function CalendarSelect() {
-  const [selectedDate, setSelectedDate] = useState(); // single date, type : object
-  const [selectedDateFormatted, setSelectedDateFormatted] = useState(""); // single date, type : string
-  // times is for multiple date vote (not yet implemented)
-  const [times, setTimes] = useState([]); // multiple dates, type : number
-
-  function onChange(nextValue) {
-    try {
-      const selectedDateConverted = nextValue.getTime();
-      setSelectedDate(nextValue);
-      setSelectedDateFormatted(
-        `${daysOfWeek[nextValue.getDay()]} , ${nextValue.getDate()} ${
-          monthsOfYear[nextValue.getMonth()]
-        } ${nextValue.getFullYear()}`
-      );
-      if (times.includes(selectedDateConverted)) {
-        // if nextValue exist, then remove
-        setTimes(times.filter((curr) => curr !== selectedDateConverted));
-      } else {
-        // if nextValue does not exist, then add
-        setTimes([...times, selectedDateConverted]);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  // useEffect(() => {
-  //   console.log(times);
-  // }, [times]);
-  // useEffect(() => {
-  //   if (selectedDate) {
-  //     console.log(selectedDate);
-  //   }
-  // }, [selectedDate]);
-  const handleSubmit = (event) => {
+import DatePicker from "react-multi-date-picker";
+import DatePanel from "react-multi-date-picker/plugins/date_panel";
+import "react-multi-date-picker/styles/layouts/mobile.css";
+import axios from "axios";
+const baseURL =
+  process.env.NODE_ENV === "production"
+    ? window.location.origin // Use the current origin in production
+    : "http://localhost:3100"; // Use localhost in development
+const api = axios.create({
+  baseURL: baseURL,
+  withCredentials: true, // to include credentials (session cookie)
+  headers: { "Content-Type": "application/json" },
+});
+function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
+  console.log(votingAgenda);
+  const [selectedDates, setSelectedDates] = useState();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    alert(`tes`);
+    try {
+      const response = await api.post(`/api${location.pathname}`);
+      console.log(response);
+    } catch (error) {
+      setFlashMessage({
+        message: error.response.data.message,
+        flash: "error",
+      });
+      navigate(`${location.pathname}`);
+    }
+  };
+  const handleChange = (selectedDates) => {
+    setSelectedDates(selectedDates);
   };
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center">
-      <form action="" onSubmit={handleSubmit} className="my-3 d-flex flex-row">
-        <div>
-          <div className="input-group input-group-sm my-2">
-            <span className="input-group-text" id="inputGroup-sizing-sm">
-              Your Name
-            </span>
-            <input
-              type="text"
-              className="form-control fw-bold text-success"
-              aria-label="Sizing example input"
-              aria-describedby="inputGroup-sizing-sm"
-              required
-            ></input>
-          </div>
-          <div className="input-group input-group-sm my-2">
-            <span className="input-group-text" id="inputGroup-sizing-sm">
-              Your Vote
-            </span>
-            <input
-              type="text"
-              className="form-control fw-bold text-success"
-              aria-label="Sizing example input"
-              aria-describedby="inputGroup-sizing-sm"
-              value={selectedDateFormatted}
-              readOnly
-              required
-            ></input>
-          </div>
+    <form
+      action=""
+      onSubmit={handleSubmit}
+      className="my-3 d-flex flex-column col-md-6 offset-md-3"
+    >
+      <div>
+        <div className="input-group input-group my-2">
+          <span
+            className="input-group-text text-muted"
+            id="inputGroup-sizing-sm"
+          >
+            Your Name
+          </span>
+          <input
+            type="text"
+            className="form-control fw-bold text-success"
+            required
+          ></input>
         </div>
-        <div className="d-flex ms-1 my-2">
-          <button className="btn btn-success">Vote</button>
-        </div>
-      </form>
-      <div className={"d-flex justify-content-center "}>
-        <Calendar
-          onChange={onChange}
-          value={selectedDate}
-          calendarType={"gregory"}
-        />
       </div>
+
+      <DatePicker
+        multiple={votingAgenda.allowMultipleDateVotes}
+        render={<CustomMultipleInput />}
+        plugins={[<DatePanel sort="date" header="Selected" />]}
+        value={selectedDates}
+        onChange={handleChange}
+        className="rmdp-mobile "
+        format="DD/MM/YYYY"
+        placeholder="Select Dates"
+        mapDays={({ date }) => {
+          console.log(date);
+          let props = {};
+          let isWeekend = [0, 6].includes(date.weekDay.index);
+          let isVoteAble = !votingAgenda.dates.includes(
+            date.format("DD-MM-YYYY")
+          );
+          if (isWeekend) props.className = "highlight highlight-red";
+          if (isVoteAble)
+            return {
+              disabled: true,
+              style: { color: "#ccc" },
+              onClick: () =>
+                setFlashMessage({
+                  message: "Selected day is not votable",
+                  flash: "error",
+                }),
+            };
+          return props;
+        }}
+      />
+      <div className="mb-1">
+        <div className="text-muted">
+          Allowed multiple date votes :{" "}
+          {votingAgenda.allowMultipleDateVotes ? (
+            <span className="text-success">yes</span>
+          ) : (
+            <span className="text-danger">no</span>
+          )}
+        </div>
+        <div>{votingAgenda.notes}</div>
+      </div>
+      <button className="btn  btn-VoteSchedule ms-1 my-2 text-center">
+        Vote
+      </button>
+    </form>
+  );
+}
+function CustomMultipleInput({ onFocus, value }) {
+  return (
+    <div class="input-group mb-1">
+      <span class="input-group-text text-muted" id="basic-addon1">
+        Your Vote
+      </span>
+      <input
+        id="datePicker"
+        type="text"
+        class="form-control"
+        onFocus={onFocus}
+        value={value}
+        placeholder="Click Here!"
+        readOnly
+      />
     </div>
   );
 }
-
 export default CalendarSelect;

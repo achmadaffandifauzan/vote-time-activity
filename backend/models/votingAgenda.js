@@ -34,6 +34,9 @@ const votingAgendaSchema = new Schema({
     type: Boolean,
     required: true,
   },
+  notes: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("VotingAgenda", votingAgendaSchema);

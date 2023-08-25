@@ -42,6 +42,7 @@ const Vote = ({ flashMessage, setFlashMessage }) => {
         <CalendarSelect
           flashMessage={flashMessage}
           setFlashMessage={setFlashMessage}
+          votingAgenda={votingAgenda}
         />
       </>
     );

@@ -148,7 +148,7 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
       </>
     );
   } else {
-    return <div>Loading Bro...</div>;
+    return <div>Loading...</div>;
   }
 }
 
