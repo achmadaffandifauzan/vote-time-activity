@@ -19,11 +19,13 @@ const votingAgendaSchema = new Schema({
       required: true,
     },
   ],
-  votersName: {
-    // to make sure same name cannot vote more than once on one VotingAgenda,
-    // why not unique : true ? becasuse unique will check to different VotingAgenda as well, not this VotingAgenda only
-    type: String,
-  },
+  votersName: [
+    {
+      // to make sure same name cannot vote more than once on one VotingAgenda,
+      // why not unique : true ? becasuse unique will check to different VotingAgenda as well, not this VotingAgenda only
+      type: String,
+    },
+  ],
   totalVote: {
     // each person may vote multiple date, that's why totalVote is needed for stats use
     type: Number,

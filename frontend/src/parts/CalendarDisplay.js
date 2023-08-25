@@ -109,47 +109,41 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
       </div>
     );
   };
-  if (votingAgenda) {
-    return (
-      <>
-        <nav>
-          <div
-            className="nav nav-tabs col-md-6 offset-md-3"
-            id="nav-tab"
-            role="tablist"
-          >
-            {votingAgenda.monthsWithYear.map((monthWithYear, i) => {
-              return (
-                <button
-                  className={"nav-link nav-link-months"}
-                  id={"btn_tabs_" + monthWithYear.split("-")[0]}
-                  data-bs-toggle="tab"
-                  onClick={() => setSelectedMonthToDisplay(monthWithYear)}
-                >
-                  {monthNames[monthWithYear.split("-")[0] - 1]}{" "}
-                  {monthWithYear.split("-")[1]}
-                </button>
-              );
-            })}
-          </div>
-        </nav>
-
-        <div className="tab-content" id="nav-tabContent">
-          <div className={"col-md-6 offset-md-3"}>
-            {votingAgenda.votingResults.map((votingResultsPerMonth) => {
-              if (
-                votingResultsPerMonth.monthWithYear == selectedMonthToDisplay
-              ) {
-                return displayCalendar(votingResultsPerMonth);
-              }
-            })}
-          </div>
+  return (
+    <>
+      <nav>
+        <div
+          className="nav nav-tabs col-md-6 offset-md-3"
+          id="nav-tab"
+          role="tablist"
+        >
+          {votingAgenda.monthsWithYear.map((monthWithYear, i) => {
+            return (
+              <button
+                className={"nav-link nav-link-months"}
+                id={"btn_tabs_" + monthWithYear.split("-")[0]}
+                data-bs-toggle="tab"
+                onClick={() => setSelectedMonthToDisplay(monthWithYear)}
+              >
+                {monthNames[monthWithYear.split("-")[0] - 1]}{" "}
+                {monthWithYear.split("-")[1]}
+              </button>
+            );
+          })}
         </div>
-      </>
-    );
-  } else {
-    return <div>Loading...</div>;
-  }
+      </nav>
+
+      <div className="tab-content" id="nav-tabContent">
+        <div className={"col-md-6 offset-md-3"}>
+          {votingAgenda.votingResults.map((votingResultsPerMonth) => {
+            if (votingResultsPerMonth.monthWithYear == selectedMonthToDisplay) {
+              return displayCalendar(votingResultsPerMonth);
+            }
+          })}
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default CalendarDisplay;

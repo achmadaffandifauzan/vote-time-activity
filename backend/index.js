@@ -154,15 +154,17 @@ app.post(
   "/api/createVoting",
   isLoggedIn,
   catchAsync(async (req, res, next) => {
-    const { dates, monthsWithYear, allowMultipleDateVotes } = req.body;
+    const { title, notes, dates, monthsWithYear, allowMultipleDateVotes } =
+      req.body;
     try {
       const votingAgenda = new VotingAgenda({
         title,
-        notes,
-        dates,
         monthsWithYear,
-        allowMultipleDateVotes,
+        dates,
+        votersName: [],
         totalVote: 0,
+        allowMultipleDateVotes,
+        notes,
       });
       for (let month of monthsWithYear) {
         const votingResult = new VotingResult();
@@ -193,6 +195,42 @@ app.get(
       return res.json({
         votingAgenda,
       });
+    } catch (error) {
+      return next(error);
+    }
+  })
+);
+app.post(
+  "/api/vote/:id",
+  catchAsync(async (req, res, next) => {
+    // reminder :
+    // monthsWithYear -> [] (in VotingAgenda)
+    // monthWithYear -> "" (in VotingResult)
+    console.log(req.body);
+    try {
+      const { name, dates, monthsWithYear } = req.body;
+      const votingAgenda = await VotingAgenda.findById(req.params.id);
+      votingAgenda.votersName.push(name);
+      votingAgenda.totalVote += 1;
+      for (let month of monthsWithYear) {
+        const votingResult = await VotingResult.findOne({
+          votingAgenda: req.params.id,
+          monthWithYear: month,
+        });
+        for (let date of dates) {
+          const day = parseInt(date.split("-")[0]);
+          votingResult.result[day].push({ name: name });
+        }
+        await votingResult.save();
+        await votingAgenda.save();
+        console.log(votingResult);
+        console.log(votingAgenda);
+        return res.json({
+          message: "Successfully vote!",
+          flash: "success",
+          redirectData: req.params.id,
+        });
+      }
     } catch (error) {
       return next(error);
     }

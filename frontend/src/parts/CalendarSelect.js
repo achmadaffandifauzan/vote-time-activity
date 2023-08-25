@@ -14,17 +14,47 @@ const api = axios.create({
   withCredentials: true, // to include credentials (session cookie)
   headers: { "Content-Type": "application/json" },
 });
+const removeDuplicates = (arr) => {
+  return arr.filter((item, index) => arr.indexOf(item) === index);
+};
 function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
   console.log(votingAgenda);
-  const [selectedDates, setSelectedDates] = useState();
+
+  const [selectedDates, setSelectedDates] = useState(); // default is (), if set to ([]), then DatePicker will be on multiple mode automatically. So, let the votingAgenda.allowMultipleDateVotes decide
+  const [name, setName] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const handleSubmit = async (event) => {
+  const submitVote = async (event) => {
     event.preventDefault();
     try {
-      const response = await api.post(`/api${location.pathname}`);
+      try {
+        var dates = selectedDates.map((date) => {
+          return date.format("DD-MM-YYYY");
+        });
+        var monthsWithYear = removeDuplicates(
+          selectedDates.map((date) => {
+            return date.format("MM-YYYY");
+          })
+        );
+      } catch (error) {
+        // if selectedDates cannot be mapped
+        var dates = [];
+        var monthsWithYear = [];
+        dates.push(selectedDates.format("DD-MM-YYYY"));
+        monthsWithYear.push(selectedDates.format("MM-YYYY"));
+      }
+      const response = await api.post(`/api${location.pathname}`, {
+        name,
+        dates,
+        monthsWithYear,
+      });
       console.log(response);
+      setFlashMessage({
+        message: response.data.message,
+        flash: "success",
+      });
     } catch (error) {
+      console.log(error);
       setFlashMessage({
         message: error.response.data.message,
         flash: "error",
@@ -37,12 +67,9 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
   };
   return (
     <>
-      <h5 className="fw-bold text-center mb-3 color-VoteSchedule">
-        {votingAgenda.title}
-      </h5>
       <form
         action=""
-        onSubmit={handleSubmit}
+        onSubmit={submitVote}
         className="my-3 d-flex flex-column col-md-6 offset-md-3"
       >
         <div className="input-group input-group my-2">
@@ -55,10 +82,10 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
           <input
             type="text"
             className="form-control fw-bold text-success"
+            onChange={(e) => setName(e.target.value)}
             required
           ></input>
         </div>
-
         <DatePicker
           multiple={votingAgenda.allowMultipleDateVotes}
           render={<CustomMultipleInput />}
@@ -69,7 +96,6 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
           format="DD/MM/YYYY"
           placeholder="Select Dates"
           mapDays={({ date }) => {
-            console.log(date);
             let props = {};
             let isWeekend = [0, 6].includes(date.weekDay.index);
             let isVoteAble = !votingAgenda.dates.includes(
@@ -80,16 +106,17 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
               return {
                 disabled: true,
                 style: { color: "#ccc" },
-                onClick: () =>
-                  setFlashMessage({
-                    message: "Selected day is not votable",
-                    flash: "error",
-                  }),
+                // onClick: () =>
+                //   setFlashMessage({
+                //     message: "Selected day is not votable",
+                //     flash: "error",
+                //   }),
               };
             return props;
           }}
         />
-        <div className="mb-1">
+
+        <div className="mb-1 ms-1">
           <div className="text-muted">
             Allowed multiple date votes :{" "}
             {votingAgenda.allowMultipleDateVotes ? (
@@ -98,25 +125,26 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
               <span className="text-danger">no</span>
             )}
           </div>
-          <div>{votingAgenda.notes}</div>
+          <div>
+            <span className="text-muted">Notes : </span>
+            <span>{votingAgenda.notes}</span>
+          </div>
         </div>
-        <button className="btn  btn-VoteSchedule ms-1 my-2 text-center">
-          Vote
-        </button>
+        <button className="btn btn-VoteSchedule my-2 text-center">Vote</button>
       </form>
     </>
   );
 }
 function CustomMultipleInput({ onFocus, value }) {
   return (
-    <div class="input-group mb-1">
-      <span class="input-group-text text-muted" id="basic-addon1">
+    <div className="input-group mb-1">
+      <span className="input-group-text text-muted" id="basic-addon1">
         Your Vote
       </span>
       <input
         id="datePicker"
         type="text"
-        class="form-control"
+        className="form-control"
         onFocus={onFocus}
         value={value}
         placeholder="Click Here!"

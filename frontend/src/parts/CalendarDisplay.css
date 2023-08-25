@@ -48,6 +48,9 @@
 .firstDay_6 {
   grid-column-start: 7;
 }
+.bg_color_red_10 {
+  background-color: rgb(255, 0, 0);
+}
 .bg_color_red_9 {
   background-color: rgba(255, 0, 0, 0.9);
 }

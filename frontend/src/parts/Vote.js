@@ -34,6 +34,9 @@ const Vote = ({ flashMessage, setFlashMessage }) => {
   if (votingAgenda) {
     return (
       <>
+        <h5 className="fw-bold text-center mb-3 color-VoteSchedule">
+          {votingAgenda.title}
+        </h5>
         <CalendarDisplay
           flashMessage={flashMessage}
           setFlashMessage={setFlashMessage}
