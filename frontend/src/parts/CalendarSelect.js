@@ -36,12 +36,15 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
     setSelectedDates(selectedDates);
   };
   return (
-    <form
-      action=""
-      onSubmit={handleSubmit}
-      className="my-3 d-flex flex-column col-md-6 offset-md-3"
-    >
-      <div>
+    <>
+      <h5 className="fw-bold text-center mb-3 color-VoteSchedule">
+        {votingAgenda.title}
+      </h5>
+      <form
+        action=""
+        onSubmit={handleSubmit}
+        className="my-3 d-flex flex-column col-md-6 offset-md-3"
+      >
         <div className="input-group input-group my-2">
           <span
             className="input-group-text text-muted"
@@ -55,53 +58,53 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
             required
           ></input>
         </div>
-      </div>
 
-      <DatePicker
-        multiple={votingAgenda.allowMultipleDateVotes}
-        render={<CustomMultipleInput />}
-        plugins={[<DatePanel sort="date" header="Selected" />]}
-        value={selectedDates}
-        onChange={handleChange}
-        className="rmdp-mobile "
-        format="DD/MM/YYYY"
-        placeholder="Select Dates"
-        mapDays={({ date }) => {
-          console.log(date);
-          let props = {};
-          let isWeekend = [0, 6].includes(date.weekDay.index);
-          let isVoteAble = !votingAgenda.dates.includes(
-            date.format("DD-MM-YYYY")
-          );
-          if (isWeekend) props.className = "highlight highlight-red";
-          if (isVoteAble)
-            return {
-              disabled: true,
-              style: { color: "#ccc" },
-              onClick: () =>
-                setFlashMessage({
-                  message: "Selected day is not votable",
-                  flash: "error",
-                }),
-            };
-          return props;
-        }}
-      />
-      <div className="mb-1">
-        <div className="text-muted">
-          Allowed multiple date votes :{" "}
-          {votingAgenda.allowMultipleDateVotes ? (
-            <span className="text-success">yes</span>
-          ) : (
-            <span className="text-danger">no</span>
-          )}
+        <DatePicker
+          multiple={votingAgenda.allowMultipleDateVotes}
+          render={<CustomMultipleInput />}
+          plugins={[<DatePanel sort="date" header="Selected" />]}
+          value={selectedDates}
+          onChange={handleChange}
+          className="rmdp-mobile "
+          format="DD/MM/YYYY"
+          placeholder="Select Dates"
+          mapDays={({ date }) => {
+            console.log(date);
+            let props = {};
+            let isWeekend = [0, 6].includes(date.weekDay.index);
+            let isVoteAble = !votingAgenda.dates.includes(
+              date.format("DD-MM-YYYY")
+            );
+            if (isWeekend) props.className = "highlight highlight-red";
+            if (isVoteAble)
+              return {
+                disabled: true,
+                style: { color: "#ccc" },
+                onClick: () =>
+                  setFlashMessage({
+                    message: "Selected day is not votable",
+                    flash: "error",
+                  }),
+              };
+            return props;
+          }}
+        />
+        <div className="mb-1">
+          <div className="text-muted">
+            Allowed multiple date votes :{" "}
+            {votingAgenda.allowMultipleDateVotes ? (
+              <span className="text-success">yes</span>
+            ) : (
+              <span className="text-danger">no</span>
+            )}
+          </div>
+          <div>{votingAgenda.notes}</div>
         </div>
-        <div>{votingAgenda.notes}</div>
-      </div>
-      <button className="btn  btn-VoteSchedule ms-1 my-2 text-center">
-        Vote
-      </button>
-    </form>
+        <button className="btn  btn-VoteSchedule ms-1 my-2 text-center">
+          Vote
+        </button>
+      </form>
+    </>
   );
 }
 function CustomMultipleInput({ onFocus, value }) {

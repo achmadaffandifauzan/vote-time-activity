@@ -157,6 +157,8 @@ app.post(
     const { dates, monthsWithYear, allowMultipleDateVotes } = req.body;
     try {
       const votingAgenda = new VotingAgenda({
+        title,
+        notes,
         dates,
         monthsWithYear,
         allowMultipleDateVotes,

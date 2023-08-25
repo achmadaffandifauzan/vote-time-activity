@@ -17,6 +17,8 @@ const api = axios.create({
 const NewVote = ({ flashMessage, setFlashMessage }) => {
   const [selectedDates, setSelectedDates] = useState([]);
   const [allowMultipleDateVotes, setAllowMultipleDateVotes] = useState(false);
+  const [title, setTitle] = useState("");
+  const [notes, setNotes] = useState("");
   const navigate = useNavigate();
   function removeDuplicates(arr) {
     return arr.filter((item, index) => arr.indexOf(item) === index);
@@ -41,6 +43,8 @@ const NewVote = ({ flashMessage, setFlashMessage }) => {
         })
       );
       const response = await api.post("/api/createVoting", {
+        title,
+        notes,
         dates,
         monthsWithYear,
         allowMultipleDateVotes,
@@ -79,6 +83,7 @@ const NewVote = ({ flashMessage, setFlashMessage }) => {
             type="text"
             className="form-control "
             id="title"
+            onChange={(e) => setTitle(e.target.value)}
             required
           ></input>
         </div>
@@ -117,6 +122,18 @@ const NewVote = ({ flashMessage, setFlashMessage }) => {
             <option value={true}>Allow</option>
             <option value={false}>Don't allow</option>
           </select>
+        </div>
+        <div class="form-floating my-3">
+          <textarea
+            class="form-control"
+            placeholder="Leave a comment here"
+            id="floatingTextarea2"
+            onChange={(e) => setNotes(e.target.value)}
+            style={{ height: "100px" }}
+          ></textarea>
+          <label className="text-muted" for="floatingTextarea2">
+            Notes (Optional)
+          </label>
         </div>
         <button className="btn btn-success btnNewCustom my-3">
           Generate link to vote

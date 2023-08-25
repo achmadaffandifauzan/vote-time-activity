@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const votingAgendaSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+  },
   // years and months are help to display vote result in calendar format
   monthsWithYear: [
     {
