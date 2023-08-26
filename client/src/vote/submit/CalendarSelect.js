@@ -54,6 +54,7 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
         message: response.data.message,
         flash: "success",
       });
+      window.location.reload();
     } catch (error) {
       console.log(error);
       setFlashMessage({

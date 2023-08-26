@@ -1,5 +1,4 @@
 - managing authenticated user vs unauthenticated user (navbar, voting more than once)
-- redirects
 - home page
 - server side validation
 - sanitize HTML

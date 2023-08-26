@@ -2,10 +2,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { React, useState, useEffect } from "react";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
-import Vote from "./parts/Vote";
+import Vote from "./vote/submit/Vote";
 import Layout from "./Layout";
 import axios from "axios";
-import NewVote from "./vote/NewVote";
+import NewVote from "./vote/create/NewVote";
 const baseURL =
   process.env.NODE_ENV === "production"
     ? window.location.origin // Use the current origin in production
