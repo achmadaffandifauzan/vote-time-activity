@@ -1,18 +1,24 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-
-const Navbar = ({ flashMessage, setFlashMessage }) => {
+import { Link, useNavigate, useLocation } from "react-router-dom";
+const baseURL =
+  process.env.NODE_ENV === "production"
+    ? window.location.origin // Use the current origin in production
+    : "http://localhost:3100"; // Use localhost in development
+const api = axios.create({
+  baseURL: baseURL,
+  withCredentials: true, // to include credentials (session cookie)
+  headers: { "Content-Type": "application/json" },
+});
+const Navbar = ({
+  flashMessage,
+  setFlashMessage,
+  currentUser,
+  setCurrentUser,
+}) => {
   const navigate = useNavigate();
-  const baseURL =
-    process.env.NODE_ENV === "production"
-      ? window.location.origin // Use the current origin in production
-      : "http://localhost:3100"; // Use localhost in development
-  const api = axios.create({
-    baseURL: baseURL,
-    withCredentials: true, // to include credentials (session cookie)
-    headers: { "Content-Type": "application/json" },
-  });
+  const location = useLocation();
+
   const handleLogout = async () => {
     try {
       const response = await api.post("/api/logout");
@@ -20,12 +26,46 @@ const Navbar = ({ flashMessage, setFlashMessage }) => {
         setFlashMessage(response.data);
       }
       if (response.data.flash === "success") {
-        navigate("/vote");
+        setCurrentUser(null);
+        if (location.pathname == "/create") {
+          navigate("/login");
+        } else {
+          navigate(`${location.pathname}`);
+        }
       }
     } catch (error) {
       if (error.response.data) {
         setFlashMessage(error.response.data);
       }
+    }
+  };
+  const authDisplay = () => {
+    if (currentUser) {
+      return (
+        <button className="nav-link m-auto navAuth" onClick={handleLogout}>
+          <span className="me-1">
+            <img src="./logout.svg" alt="" />
+          </span>
+          <span className="spanMaterialSymbol me-3">Logout</span>
+        </button>
+      );
+    } else {
+      return (
+        <>
+          <Link to="/login" className="nav-link m-auto navAuth">
+            <span className="me-1">
+              <img src="./login.svg" alt="" />
+            </span>
+            <span className="spanMaterialSymbol me-3">Login</span>
+          </Link>
+          <Link to="/register" className="nav-link m-auto navAuth">
+            <span className="me-1">
+              <img src="./register.svg" alt="" />
+            </span>
+            <span className="spanMaterialSymbol me-3">Register</span>
+          </Link>
+        </>
+      );
     }
   };
   return (
@@ -59,26 +99,7 @@ const Navbar = ({ flashMessage, setFlashMessage }) => {
               Home
             </a>
           </div>
-          <div className="navbar-nav ms-auto">
-            <Link to="/login" className="nav-link m-auto navAuth">
-              <span className="me-1">
-                <img src="./login.svg" alt="" />
-              </span>
-              <span className="spanMaterialSymbol me-3">Login</span>
-            </Link>
-            <Link to="/register" className="nav-link m-auto navAuth">
-              <span className="me-1">
-                <img src="./register.svg" alt="" />
-              </span>
-              <span className="spanMaterialSymbol me-3">Register</span>
-            </Link>
-            <button className="nav-link m-auto navAuth" onClick={handleLogout}>
-              <span className="me-1">
-                <img src="./logout.svg" alt="" />
-              </span>
-              <span className="spanMaterialSymbol me-3">Logout</span>
-            </button>
-          </div>
+          <div className="navbar-nav ms-auto">{authDisplay()}</div>
         </div>
       </div>
     </nav>

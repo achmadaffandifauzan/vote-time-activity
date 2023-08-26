@@ -90,12 +90,13 @@ const NewVote = ({ flashMessage, setFlashMessage }) => {
 
         <DatePicker
           multiple
+          sort
           render={<CustomMultipleInput />}
           plugins={[<DatePanel sort="date" header="Selected" />]}
           value={selectedDates}
           onChange={handleChange}
           className="rmdp-mobile"
-          format="DD/MM/YYYY"
+          format="DD-MM-YYYY"
           placeholder="Select Dates"
           mapDays={({ date }) => {
             let props = {};
@@ -123,15 +124,15 @@ const NewVote = ({ flashMessage, setFlashMessage }) => {
             <option value={false}>Don't allow</option>
           </select>
         </div>
-        <div class="form-floating my-3">
+        <div className="form-floating my-3">
           <textarea
-            class="form-control"
+            className="form-control"
             placeholder="Leave a comment here"
             id="floatingTextarea2"
             onChange={(e) => setNotes(e.target.value)}
             style={{ height: "100px" }}
           ></textarea>
-          <label className="text-muted" for="floatingTextarea2">
+          <label className="text-muted" htmlFor="floatingTextarea2">
             Notes (Optional)
           </label>
         </div>

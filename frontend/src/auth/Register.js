@@ -10,7 +10,12 @@ const api = axios.create({
   withCredentials: true, // to include credentials (session cookie)
   headers: { "Content-Type": "application/json" },
 });
-function Register({ flashMessage, setFlashMessage }) {
+function Register({
+  flashMessage,
+  setFlashMessage,
+  currentUser,
+  setCurrentUser,
+}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -28,9 +33,12 @@ function Register({ flashMessage, setFlashMessage }) {
       });
       if (response.data) {
         setFlashMessage(response.data);
-      }
-      if (response.data.flash === "success") {
-        navigate("/vote");
+        if (response.data.user) {
+          setCurrentUser(response.data.user);
+        }
+        if (response.data.flash === "success") {
+          navigate("/create");
+        }
       }
     } catch (error) {
       if (error.response.data) {

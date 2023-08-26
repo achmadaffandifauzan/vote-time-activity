@@ -25,6 +25,7 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
   const location = useLocation();
   const navigate = useNavigate();
   const submitVote = async (event) => {
+    console.log(selectedDates);
     event.preventDefault();
     try {
       try {
@@ -88,12 +89,13 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
         </div>
         <DatePicker
           multiple={votingAgenda.allowMultipleDateVotes}
+          sort
           render={<CustomMultipleInput />}
           plugins={[<DatePanel sort="date" header="Selected" />]}
           value={selectedDates}
           onChange={handleChange}
           className="rmdp-mobile "
-          format="DD/MM/YYYY"
+          format="DD-MM-YYYY"
           placeholder="Select Dates"
           mapDays={({ date }) => {
             let props = {};

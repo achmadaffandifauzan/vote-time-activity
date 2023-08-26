@@ -108,6 +108,7 @@ app.post(
         res.json({
           message: "Successfully Registered!",
           flash: "success",
+          user: req.user,
         });
       });
     } catch (error) {
@@ -134,6 +135,7 @@ app.post(
     res.json({
       message: "Successfully logged in!",
       flash: "success",
+      user: req.user,
     });
   })
 );

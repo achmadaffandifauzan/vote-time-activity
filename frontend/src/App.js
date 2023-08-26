@@ -17,7 +17,7 @@ const api = axios.create({
 });
 const App = () => {
   const [flashMessage, setFlashMessage] = useState(null);
-  const { currentUser, setCurrentUser } = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   // the flow of flashMessage state :
   // declared in App.js
   // pass it to Layout.js to display it (then also pass to Navbar)
@@ -31,7 +31,7 @@ const App = () => {
         }
       }
     } catch (error) {
-      console.log(error);
+      setCurrentUser(null);
     }
   };
   useEffect(() => {
@@ -42,7 +42,12 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Layout flashMessage={flashMessage} setFlashMessage={setFlashMessage}>
+      <Layout
+        flashMessage={flashMessage}
+        setFlashMessage={setFlashMessage}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+      >
         <Routes>
           <Route
             path="/login"
@@ -51,6 +56,8 @@ const App = () => {
               <Login
                 flashMessage={flashMessage}
                 setFlashMessage={setFlashMessage}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
               />
             }
           />
@@ -61,6 +68,8 @@ const App = () => {
               <Register
                 flashMessage={flashMessage}
                 setFlashMessage={setFlashMessage}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
               />
             }
           />
