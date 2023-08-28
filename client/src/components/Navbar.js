@@ -18,7 +18,6 @@ const Navbar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const handleLogout = async () => {
     try {
       const response = await api.post("/api/logout");
@@ -66,7 +65,10 @@ const Navbar = ({
             </span>
             <span className="spanMaterialSymbol me-3">Login</span>
           </Link>
-          {/* <Link to="/register" className="nav-link m-auto navAuth">
+          {/* <Link
+            to="/register"
+            className="nav-link m-auto navAuth"
+          >
             <span className="me-1">
               <img src="./register.svg" alt="" />
             </span>

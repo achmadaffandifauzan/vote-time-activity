@@ -27,6 +27,9 @@
   justify-content: center;
   align-items: center;
 }
+.nav-link-months {
+  font-size: 14px;
+}
 .firstDay_0 {
   grid-column-start: 1;
 }
@@ -49,32 +52,32 @@
   grid-column-start: 7;
 }
 .bg_color_red_10 {
-  background-color: rgb(255, 0, 0);
+  background-color: rgb(92, 42, 255, 1);
 }
 .bg_color_red_9 {
-  background-color: rgba(255, 0, 0, 0.9);
+  background-color: rgb(92, 42, 255, 0.9);
 }
 .bg_color_red_8 {
-  background-color: rgba(255, 0, 0, 0.8);
+  background-color: rgb(92, 42, 255, 0.8);
 }
 .bg_color_red_7 {
-  background-color: rgba(255, 0, 0, 0.7);
+  background-color: rgb(92, 42, 255, 0.7);
 }
 .bg_color_red_6 {
-  background-color: rgba(255, 0, 0, 0.6);
+  background-color: rgb(92, 42, 255, 0.6);
 }
 .bg_color_red_5 {
-  background-color: rgba(255, 0, 0, 0.5);
+  background-color: rgb(92, 42, 255, 0.5);
 }
 .bg_color_red_4 {
-  background-color: rgba(255, 0, 0, 0.4);
+  background-color: rgb(92, 42, 255, 0.4);
 }
 .bg_color_red_3 {
-  background-color: rgba(255, 0, 0, 0.3);
+  background-color: rgb(92, 42, 255, 0.3);
 }
 .bg_color_red_2 {
-  background-color: rgba(255, 0, 0, 0.2);
+  background-color: rgb(92, 42, 255, 0.2);
 }
 .bg_color_red_1 {
-  background-color: rgba(255, 0, 0, 0.1);
+  background-color: rgb(92, 42, 255, 0.1);
 }

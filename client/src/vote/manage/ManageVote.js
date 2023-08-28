@@ -49,24 +49,26 @@ const ManageVote = ({
   if (votingAgenda && currentUser) {
     return (
       <>
-        <div className="text-center  fw-bold">
-          <span className=" color-VoteSchedule">Voting result of</span>{" "}
-          <span>{votingAgenda.title}</span>
+        <div className="d-flex flex-column col-md-6 offset-md-3">
+          <div className="text-center fw-bold">
+            <span className=" color-VoteSchedule">Voting result of</span>{" "}
+            <span>{votingAgenda.title}</span>
+          </div>
+          <button
+            className="btn btn-VoteSchedule btn-sm my-3"
+            onClick={() => {
+              navigator.clipboard.writeText(
+                window.location.href.replace("/manage", "")
+              );
+              setFlashMessage({
+                message: "The link has been copied successfully.",
+                flash: "success",
+              });
+            }}
+          >
+            Get Vote Link
+          </button>
         </div>
-        <button
-          className="btn btn-VoteSchedule col-md-6 offset-md-3 my-3"
-          onClick={() => {
-            navigator.clipboard.writeText(
-              window.location.href.replace("/manage", "")
-            );
-            setFlashMessage({
-              message: "The link has been copied successfully.",
-              flash: "success",
-            });
-          }}
-        >
-          Get Vote Link
-        </button>
         <CalendarDisplay
           flashMessage={flashMessage}
           setFlashMessage={setFlashMessage}

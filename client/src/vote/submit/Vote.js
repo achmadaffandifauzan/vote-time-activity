@@ -46,7 +46,7 @@ const Vote = ({
             : `${location.pathname}/manage`;
         return (
           <Link to={`${currentPath}`} className="">
-            <button className="btn btn-VoteSchedule mb-2  w-100">
+            <button className="btn btn-sm btn-VoteSchedule mb-2  w-100">
               Manage result
             </button>
           </Link>

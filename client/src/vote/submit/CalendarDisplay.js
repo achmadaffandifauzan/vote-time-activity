@@ -26,7 +26,7 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
     }
   }, []);
   const displayCalendar = (votingResultsPerMonth) => {
-    // console.log(votingResultsPerMonth);
+    console.log("votingResultsPerMonth", votingResultsPerMonth);
     const firstDay = new Date(
       votingResultsPerMonth.monthWithYear.split("-")[1],
       votingResultsPerMonth.monthWithYear.split("-")[0] - 1,
@@ -40,6 +40,7 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
     //   return { firstDay, totalDays };
     return (
       <div
+        key={`votingResultsPerMonth_${votingResultsPerMonth.monthWithYear}`}
         className="tab-pane fade show active"
         id={"tabs_" + votingResultsPerMonth.monthWithYear.split("-")[0]}
         role="tabpanel"
@@ -48,13 +49,18 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
       >
         <div className="calendarGrid my-3">
           {daysOfWeek.map((day) => {
-            return <div className="calendarHeader">{day}</div>;
+            return (
+              <div key={day} className="calendarHeader">
+                {day}
+              </div>
+            );
           })}
           {/* Object.entries is used to convert from obj to array, because map only works on array */}
           {Object.entries(votingResultsPerMonth.result).map((dayResult, i) => {
             if (dayResult[0] <= totalDays) {
               return (
                 <div
+                  key={`dayResult_${i}`}
                   onMouseEnter={(e) => {
                     if (e.target.querySelector(".badgeVoters")) {
                       document
@@ -120,7 +126,8 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
           {votingAgenda.monthsWithYear.map((monthWithYear, i) => {
             return (
               <button
-                className={"nav-link nav-link-months"}
+                key={`monthWithYear_${i}`}
+                className={"nav-link nav-link-months py-1 px-2"}
                 id={"btn_tabs_" + monthWithYear.split("-")[0]}
                 data-bs-toggle="tab"
                 onClick={() => setSelectedMonthToDisplay(monthWithYear)}
