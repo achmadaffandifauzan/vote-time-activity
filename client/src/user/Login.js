@@ -28,7 +28,7 @@ function Login({ flashMessage, setFlashMessage, currentUser, setCurrentUser }) {
           setCurrentUser(response.data.user);
         }
         if (response.data.flash === "success") {
-          navigate("/create");
+          navigate("/users/vote");
         }
       }
     } catch (error) {

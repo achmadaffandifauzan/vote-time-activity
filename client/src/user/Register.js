@@ -37,7 +37,7 @@ function Register({
           setCurrentUser(response.data.user);
         }
         if (response.data.flash === "success") {
-          navigate("/create");
+          navigate("/users/vote");
         }
       }
     } catch (error) {

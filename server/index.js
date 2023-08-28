@@ -242,6 +242,16 @@ app.post(
     }
   })
 );
+app.get(
+  "/api/users/vote",
+  isLoggedIn,
+  catchAsync(async (req, res, next) => {
+    const votingAgendas = await VotingAgenda.find({ author: req.user });
+    return res.json({
+      votingAgendas,
+    });
+  })
+);
 app.all("*", (req, res, next) => {
   next(new ExpressError("Not Found!", 404));
 });

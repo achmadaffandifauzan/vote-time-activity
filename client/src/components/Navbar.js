@@ -42,12 +42,20 @@ const Navbar = ({
   const authDisplay = () => {
     if (currentUser) {
       return (
-        <button className="nav-link m-auto navAuth" onClick={handleLogout}>
-          <span className="me-1">
-            <img src="./logout.svg" alt="" />
-          </span>
-          <span className="spanMaterialSymbol me-3">Logout</span>
-        </button>
+        <>
+          <Link to="/users/vote" className="nav-link m-auto navAuth">
+            <span className="me-1">
+              <img src="./user.svg" alt="" />
+            </span>
+            <span className="spanMaterialSymbol me-3">Manage</span>
+          </Link>
+          <button className="nav-link m-auto navAuth" onClick={handleLogout}>
+            <span className="me-1">
+              <img src="./logout.svg" alt="" />
+            </span>
+            <span className="spanMaterialSymbol me-3">Logout</span>
+          </button>
+        </>
       );
     } else {
       return (

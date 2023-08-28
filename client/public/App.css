@@ -20,18 +20,23 @@ body {
   font-size: 16px;
 }
 
-.blueVoteSchedule {
-  color: #5969f1 !important;
-}
-
 .blueVoteScheduleBg {
   background-color: #5969f1 !important;
 }
-
+.blueVoteScheduleBg-gradient {
+  background-color: #5968f1;
+  background: linear-gradient(to right, #5c2affc0, #5968f1b8, #9ca6ff);
+}
 .borderRadius {
   border-radius: 20px !important;
 }
-
+.box-shadow-19 {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+.icon-light {
+  color: white !important;
+}
 .btn-VoteSchedule {
   background-color: #9ca6ff;
   /* background: linear-gradient(to right, #5969F1, #9CA6FF); */
@@ -52,7 +57,7 @@ body {
 .color-VoteSchedule,
 .color-VoteSchedule:focus,
 .color-VoteSchedule:hover {
-  color: #5969f1;
+  color: #5969f1 !important;
 }
 
 /* ------- */

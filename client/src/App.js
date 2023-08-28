@@ -1,12 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { React, useState, useEffect } from "react";
-import Login from "./auth/Login";
-import Register from "./auth/Register";
+import Login from "./user/Login";
+import Register from "./user/Register";
 import Vote from "./vote/submit/Vote";
 import Layout from "./Layout";
 import axios from "axios";
 import NewVote from "./vote/create/NewVote";
 import ManageVote from "./vote/manage/ManageVote";
+import OwnedVote from "./user/OwnedVote";
 const baseURL =
   process.env.NODE_ENV === "production"
     ? window.location.origin // Use the current origin in production
@@ -102,6 +103,18 @@ const App = () => {
             // exact
             element={
               <ManageVote
+                flashMessage={flashMessage}
+                setFlashMessage={setFlashMessage}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+          <Route
+            path="/users/vote"
+            // exact
+            element={
+              <OwnedVote
                 flashMessage={flashMessage}
                 setFlashMessage={setFlashMessage}
                 currentUser={currentUser}

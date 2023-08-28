@@ -24,11 +24,7 @@ const ManageVote = ({
   const navigate = useNavigate();
   const getVotingAgenda = async () => {
     if (!currentUser) return null; // if currentUser not yet received, then this function retry another time
-    console.log("AAAA");
     try {
-      console.log("BBBB");
-      console.log("CCC");
-
       const response = await api.get(`/api/vote/${voteId}`);
       if (currentUser._id !== response.data.votingAgenda.author) {
         setFlashMessage({
