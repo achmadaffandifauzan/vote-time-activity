@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import CalendarSelect from "./CalendarSelect";
-import CalendarDisplay from "./CalendarDisplay";
-import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
+import CalendarDisplay from "../submit/CalendarDisplay";
+import Chart from "./Chart";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+
 const baseURL =
   process.env.NODE_ENV === "production"
     ? window.location.origin // Use the current origin in production
@@ -12,7 +13,7 @@ const api = axios.create({
   withCredentials: true, // to include credentials (session cookie)
   headers: { "Content-Type": "application/json" },
 });
-const Vote = ({
+const ManageVote = ({
   flashMessage,
   setFlashMessage,
   currentUser,
@@ -21,12 +22,24 @@ const Vote = ({
   const [votingAgenda, setVotingAgenda] = useState();
   const { voteId } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const getVotingAgenda = async () => {
+    if (!currentUser) return null; // if currentUser not yet received, then this function retry another time
+    console.log("AAAA");
     try {
+      console.log("BBBB");
+      console.log("CCC");
+
       const response = await api.get(`/api/vote/${voteId}`);
+      if (currentUser._id !== response.data.votingAgenda.author) {
+        setFlashMessage({
+          message: "You're not authorized",
+          flash: "error",
+        });
+        return navigate("/");
+      }
       setVotingAgenda(response.data.votingAgenda);
     } catch (error) {
+      console.log(error);
       setFlashMessage({
         message: error.response.data.message,
         flash: "error",
@@ -36,39 +49,34 @@ const Vote = ({
   };
   useEffect(() => {
     getVotingAgenda();
-  }, []);
-  const manageVoteButton = () => {
-    if (currentUser) {
-      if (votingAgenda.author === currentUser._id) {
-        const currentPath =
-          location.pathname.slice(-1) == "/"
-            ? `${location.pathname}manage`
-            : `${location.pathname}/manage`;
-        return (
-          <Link to={`${currentPath}`} className="">
-            <button className="btn btn-VoteSchedule mb-2  w-100">
-              Manage result
-            </button>
-          </Link>
-        );
-      }
-    }
-  };
-  if (votingAgenda) {
+  }, [currentUser]);
+  if (votingAgenda && currentUser) {
     return (
       <>
-        <div className="d-flex flex-column col-md-6 offset-md-3">
-          <h5 className="fw-bold text-center mb-3 color-VoteSchedule">
-            {votingAgenda.title}
-          </h5>
-          {manageVoteButton()}
+        <div className="text-center  fw-bold">
+          <span className=" color-VoteSchedule">Voting result of</span>{" "}
+          <span>{votingAgenda.title}</span>
         </div>
+        <button
+          className="btn btn-VoteSchedule col-md-6 offset-md-3 my-3"
+          onClick={() => {
+            navigator.clipboard.writeText(
+              window.location.href.replace("/manage", "")
+            );
+            setFlashMessage({
+              message: "The link has been copied successfully.",
+              flash: "success",
+            });
+          }}
+        >
+          Get Vote Link
+        </button>
         <CalendarDisplay
           flashMessage={flashMessage}
           setFlashMessage={setFlashMessage}
           votingAgenda={votingAgenda}
         />
-        <CalendarSelect
+        <Chart
           flashMessage={flashMessage}
           setFlashMessage={setFlashMessage}
           votingAgenda={votingAgenda}
@@ -80,4 +88,4 @@ const Vote = ({
   }
 };
 
-export default Vote;
+export default ManageVote;

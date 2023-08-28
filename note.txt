@@ -1,4 +1,11 @@
 - managing authenticated user vs unauthenticated user (navbar, voting more than once)
 - home page
 - server side validation
-- sanitize HTML
+
+err : getting currentUser and getting voteAgenda API from ManageVote.js should be currentUser first
+
+
+
+(-) feature : 
+
+manage vote, switch language

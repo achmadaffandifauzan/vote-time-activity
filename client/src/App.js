@@ -6,6 +6,7 @@ import Vote from "./vote/submit/Vote";
 import Layout from "./Layout";
 import axios from "axios";
 import NewVote from "./vote/create/NewVote";
+import ManageVote from "./vote/manage/ManageVote";
 const baseURL =
   process.env.NODE_ENV === "production"
     ? window.location.origin // Use the current origin in production
@@ -79,6 +80,8 @@ const App = () => {
               <Vote
                 flashMessage={flashMessage}
                 setFlashMessage={setFlashMessage}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
               />
             }
           />
@@ -89,6 +92,20 @@ const App = () => {
               <NewVote
                 flashMessage={flashMessage}
                 setFlashMessage={setFlashMessage}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+          <Route
+            path="/vote/:voteId/manage"
+            // exact
+            element={
+              <ManageVote
+                flashMessage={flashMessage}
+                setFlashMessage={setFlashMessage}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
               />
             }
           />

@@ -1,6 +1,5 @@
-import { React, useEffect, useRef } from "react";
+import { React, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import "react-multi-date-picker/styles/layouts/mobile.css";
@@ -14,12 +13,26 @@ const api = axios.create({
   withCredentials: true, // to include credentials (session cookie)
   headers: { "Content-Type": "application/json" },
 });
-const NewVote = ({ flashMessage, setFlashMessage }) => {
+const NewVote = ({
+  flashMessage,
+  setFlashMessage,
+  currentUser,
+  setCurrentUser,
+}) => {
   const [selectedDates, setSelectedDates] = useState([]);
   const [allowMultipleDateVotes, setAllowMultipleDateVotes] = useState(false);
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!currentUser) {
+      setFlashMessage({
+        message: "You need to logged in first.",
+        flash: "error",
+      });
+      return navigate("/login");
+    }
+  }, []);
   function removeDuplicates(arr) {
     return arr.filter((item, index) => arr.indexOf(item) === index);
   }

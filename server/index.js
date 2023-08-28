@@ -167,6 +167,7 @@ app.post(
         totalVote: 0,
         allowMultipleDateVotes,
         notes,
+        author: req.user,
       });
       for (let month of monthsWithYear) {
         const votingResult = new VotingResult();
@@ -176,6 +177,9 @@ app.post(
         await votingResult.save();
       }
       await votingAgenda.save();
+      const user = await User.findById(req.user);
+      user.createdVote.push(votingAgenda);
+      await user.save();
       return res.json({
         message: "Successfully created",
         flash: "success",
@@ -198,7 +202,7 @@ app.get(
         votingAgenda,
       });
     } catch (error) {
-      return next(error);
+      return next(new ExpressError("Not Found!", 404));
     }
   })
 );

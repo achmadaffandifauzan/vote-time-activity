@@ -133,7 +133,7 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
             <span>{votingAgenda.notes}</span>
           </div>
         </div>
-        <button className="btn btn-VoteSchedule my-2 text-center">Vote</button>
+        <button className="btn btn-VoteSchedule mt-2 text-center">Vote</button>
       </form>
     </>
   );

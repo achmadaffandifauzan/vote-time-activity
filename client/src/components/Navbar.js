@@ -58,12 +58,12 @@ const Navbar = ({
             </span>
             <span className="spanMaterialSymbol me-3">Login</span>
           </Link>
-          <Link to="/register" className="nav-link m-auto navAuth">
+          {/* <Link to="/register" className="nav-link m-auto navAuth">
             <span className="me-1">
               <img src="./register.svg" alt="" />
             </span>
             <span className="spanMaterialSymbol me-3">Register</span>
-          </Link>
+          </Link> */}
         </>
       );
     }
@@ -74,14 +74,9 @@ const Navbar = ({
       className="navbar navbar-expand-lg py-3 navbar-dark sticky-top"
     >
       <div className="container-fluid">
-        <a className="navbar-brand my-0 py-0" href="/=">
-          <img
-            src="/icons/3.svg"
-            alt="Logo"
-            height="35px"
-            className="d-inline-block align-text-center"
-          ></img>
-        </a>
+        <div className="fw-bold text-decoration-none my-0 py-0">
+          Voting Maker
+        </div>
         <button
           className="navbar-toggler"
           type="button"
@@ -94,12 +89,16 @@ const Navbar = ({
           <span className="navbar-toggler-icon color-light"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div className="navbar-nav me-auto">
-            <a className="nav-link navMenu" href="/">
-              Home
-            </a>
+          <div className="navbar-nav me-auto"></div>
+          <div className="navbar-nav ms-auto">
+            <Link to="/create" className="nav-link m-auto navAuth">
+              <span className="me-1">
+                <img src="./vote_fill.svg" alt="" />
+              </span>
+              <span className="spanMaterialSymbol me-3">Create</span>
+            </Link>
+            {authDisplay()}
           </div>
-          <div className="navbar-nav ms-auto">{authDisplay()}</div>
         </div>
       </div>
     </nav>
