@@ -42,6 +42,12 @@ const Navbar = ({
     if (currentUser) {
       return (
         <>
+          <Link to="/create" className="nav-link m-auto navAuth">
+            <span className="me-1">
+              <img src="./vote_fill.svg" alt="" />
+            </span>
+            <span className="spanMaterialSymbol me-3">Create</span>
+          </Link>
           <Link to="/users/vote" className="nav-link m-auto navAuth">
             <span className="me-1">
               <img src="./user.svg" alt="" />
@@ -65,15 +71,12 @@ const Navbar = ({
             </span>
             <span className="spanMaterialSymbol me-3">Login</span>
           </Link>
-          {/* <Link
-            to="/register"
-            className="nav-link m-auto navAuth"
-          >
+          <Link to="/register" className="nav-link m-auto navAuth">
             <span className="me-1">
               <img src="./register.svg" alt="" />
             </span>
             <span className="spanMaterialSymbol me-3">Register</span>
-          </Link> */}
+          </Link>
         </>
       );
     }
@@ -84,9 +87,9 @@ const Navbar = ({
       className="navbar navbar-expand-lg py-3 navbar-dark sticky-top"
     >
       <div className="container-fluid">
-        <div className="fw-bold text-decoration-none my-0 py-0">
-          Voting Maker
-        </div>
+        <Link to={"/"} className="text-decoration-none text-white">
+          <div className="fw-bold  my-0 py-0">Voting Maker</div>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -100,15 +103,7 @@ const Navbar = ({
         </button>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav me-auto"></div>
-          <div className="navbar-nav ms-auto">
-            <Link to="/create" className="nav-link m-auto navAuth">
-              <span className="me-1">
-                <img src="./vote_fill.svg" alt="" />
-              </span>
-              <span className="spanMaterialSymbol me-3">Create</span>
-            </Link>
-            {authDisplay()}
-          </div>
+          <div className="navbar-nav ms-auto">{authDisplay()}</div>
         </div>
       </div>
     </nav>

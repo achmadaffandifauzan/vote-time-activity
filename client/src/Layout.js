@@ -10,14 +10,14 @@ const Layout = ({
   setCurrentUser,
 }) => {
   return (
-    <div className="mainPage">
+    <div className="mainPage vh-100">
       <Navbar
         flashMessage={flashMessage}
         setFlashMessage={setFlashMessage}
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}
       />
-      <div className="container-xxl">
+      <div className="container-xxl ">
         {flashMessage ? (
           <Flash
             message={flashMessage}

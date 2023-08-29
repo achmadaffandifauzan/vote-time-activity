@@ -1,4 +1,4 @@
-import { React, useEffect, useRef } from "react";
+import { React, useEffect } from "react";
 import { useState } from "react";
 import "./CalendarDisplay.css";
 const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -64,7 +64,7 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
                   key={`dayResult_${i + 1}`}
                   className={(() => {
                     let className = "calendarMain" + " ";
-                    if (i + 1 == 1) {
+                    if (i + 1 === 1) {
                       className = className + "firstDay_" + firstDay;
                     }
                     // making sure it is not undefined
@@ -146,8 +146,12 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
       <div className="tab-content" id="nav-tabContent">
         <div className={"col-md-6 offset-md-3"}>
           {votingAgenda.votingResults.map((votingResultsPerMonth) => {
-            if (votingResultsPerMonth.monthWithYear == selectedMonthToDisplay) {
+            if (
+              votingResultsPerMonth.monthWithYear === selectedMonthToDisplay
+            ) {
               return displayCalendar(votingResultsPerMonth);
+            } else {
+              return null;
             }
           })}
         </div>

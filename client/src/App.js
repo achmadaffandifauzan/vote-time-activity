@@ -8,6 +8,8 @@ import axios from "axios";
 import NewVote from "./vote/create/NewVote";
 import ManageVote from "./vote/manage/ManageVote";
 import OwnedVote from "./user/OwnedVote";
+import Landing from "./Landing";
+
 const baseURL =
   process.env.NODE_ENV === "production"
     ? window.location.origin // Use the current origin in production
@@ -119,6 +121,16 @@ const App = () => {
                 setFlashMessage={setFlashMessage}
                 currentUser={currentUser}
                 setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+          <Route
+            path="/"
+            exact
+            element={
+              <Landing
+                flashMessage={flashMessage}
+                setFlashMessage={setFlashMessage}
               />
             }
           />

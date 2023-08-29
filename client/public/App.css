@@ -7,7 +7,39 @@ body {
   padding-top: 100px;
   padding-bottom: 20px;
 }
-
+.no-border {
+  border: 0 !important;
+}
+.landing-page {
+  height: 150vh !important;
+  /* src : bootstrap v5.3 home page */
+  background-color: #212529;
+  background-image: linear-gradient(
+      180deg,
+      rgba(33, 37, 41, 0.01),
+      rgba(33, 37, 41, 1) 85%
+    ),
+    radial-gradient(
+      ellipse at top left,
+      rgba(13, 110, 253, 0.5),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at top right,
+      rgba(255, 228, 132, 0.5),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(112.520718, 44.062154, 249.437846, 0.5),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at bottom left,
+      rgba(214, 51, 132, 0.5),
+      transparent 50%
+    );
+}
 .colorLightGreen {
   color: #00ff4c;
 }
@@ -43,7 +75,9 @@ body {
   color: white;
   transition: 0.3s;
 }
-
+.btn-VoteSchedule-purple {
+  background-color: #6c10f3;
+}
 .btn-VoteSchedule:hover {
   background-color: #5969f1;
   color: white;

@@ -67,7 +67,11 @@ const Chart = ({ flashMessage, setFlashMessage, votingAgenda }) => {
             date.split("-")[1] ==
             votingResultBymonth.monthWithYear.split("-")[0]
           ) {
-            return votingResultBymonth.results[parseInt(date.split("-")[0])];
+            return votingResultBymonth.results[
+              parseInt(date.split("-")[0]) - 1
+            ];
+          } else {
+            return 0;
           }
         }),
         borderColor: borderColor,

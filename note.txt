@@ -1,11 +1,9 @@
 - home page (for unauthenticated user)
-- server side validation (input email,)
-- option to login for vote
+
 
 find voter and his votes
 find voters who selects certain date
 
-CHANGE SCHEMAS 
 
 (-) feature : 
 switch language

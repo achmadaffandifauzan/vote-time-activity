@@ -42,6 +42,9 @@ const OwnedVote = ({
   if (votingAgendas) {
     return (
       <div className="d-flex flex-column col-md-6 offset-md-3">
+        <div className="color-VoteSchedule text-center fw-bold mb-3">
+          Your Vote Agendas
+        </div>
         {votingAgendas.map((votingAgenda) => {
           return (
             <div key={votingAgenda._id} className="card mb-3">
