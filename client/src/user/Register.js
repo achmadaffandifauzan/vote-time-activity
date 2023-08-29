@@ -112,7 +112,10 @@ function Register({
         </div>
         <button className="btn btn-success btnNewCustom mt-3">Register</button>
         <div className="mt-3">
-          Already have an account ? <Link to="/login">Login</Link>
+          Already have an account ?{" "}
+          <Link to="/login" className="text-decoration-none">
+            Login
+          </Link>
         </div>
       </form>
     </div>

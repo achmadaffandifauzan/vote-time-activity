@@ -17,6 +17,7 @@ const catchAsync = require("./utils/CatchAsync");
 const User = require("./models/user");
 const VotingAgenda = require("./models/votingAgenda");
 const VotingResult = require("./models/votingResult");
+const Vote = require("./models/vote");
 
 const dbUrl = process.env.DB_URL;
 mongoose.set("strictQuery", true);
@@ -112,7 +113,6 @@ app.post(
         });
       });
     } catch (error) {
-      console.log(error);
       if (error.message.includes("E11000")) {
         res.json({
           message:
@@ -173,6 +173,10 @@ app.post(
         const votingResult = new VotingResult();
         votingResult.monthWithYear = month;
         votingResult.votingAgenda = votingAgenda;
+        votingResult.results = [
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0,
+        ];
         votingAgenda.votingResults.push(votingResult);
         await votingResult.save();
       }
@@ -194,9 +198,9 @@ app.get(
   "/api/vote/:id",
   catchAsync(async (req, res, next) => {
     try {
-      const votingAgenda = await VotingAgenda.findById(req.params.id).populate(
-        "votingResults"
-      );
+      const votingAgenda = await VotingAgenda.findById(req.params.id).populate({
+        path: "votingResults",
+      });
       if (!votingAgenda) return next(new ExpressError("Not Found!", 404));
       return res.json({
         votingAgenda,
@@ -212,31 +216,42 @@ app.post(
     // reminder :
     // monthsWithYear -> [] (in VotingAgenda)
     // monthWithYear -> "" (in VotingResult)
-    console.log(req.body);
     try {
       const { name, dates, monthsWithYear } = req.body;
       const votingAgenda = await VotingAgenda.findById(req.params.id);
       votingAgenda.votersName.push(name);
       votingAgenda.totalVote += 1;
+      // update by month
       for (let month of monthsWithYear) {
         const votingResult = await VotingResult.findOne({
           votingAgenda: req.params.id,
           monthWithYear: month,
         });
         for (let date of dates) {
-          const day = parseInt(date.split("-")[0]);
-          votingResult.result[day].push({ name: name });
+          // looping selected date then matching it to selected month, then operate
+          if (`${date.split("-")[1]}-${date.split("-")[2]}` == month) {
+            const vote = new Vote({
+              name,
+              votingAgenda,
+              votingResult,
+              votedDate: date,
+            });
+            await vote.save();
+            const day = parseInt(date.split("-")[0]);
+            // results is array of num (of numbers of vote)
+            votingResult.results[parseInt(day) - 1] += 1; // add 1 vote to the voted date
+            // details is array of vote model
+            votingResult.details.push(vote);
+          }
         }
         await votingResult.save();
         await votingAgenda.save();
-        console.log(votingResult);
-        console.log(votingAgenda);
-        return res.json({
-          message: "Successfully vote!",
-          flash: "success",
-          redirectData: req.params.id,
-        });
       }
+      return res.json({
+        message: "Successfully vote!",
+        flash: "success",
+        redirectData: req.params.id,
+      });
     } catch (error) {
       return next(error);
     }
@@ -252,6 +267,20 @@ app.get(
     });
   })
 );
+// app.post(
+//   "/api/vote/:id/stat",isLoggedIn,catchAsync(async(req,res,next)=>{
+//     const votingAgenda = await VotingAgenda.findById(req.params.id).populate(
+//       "votingResults"
+//     );
+//     if (!votingAgenda) return next(new ExpressError("Not Found!", 404));
+//     if (votingAgenda.author !== req.user._id) return next(new ExpressError("You're not allowed to do that!", 401));
+
+//     for (let i = 1; i<=30;i++){
+//       await VotingResult.find({votingAgenda:votingAgenda,result})
+//     }
+
+//   })
+// )
 app.all("*", (req, res, next) => {
   next(new ExpressError("Not Found!", 404));
 });

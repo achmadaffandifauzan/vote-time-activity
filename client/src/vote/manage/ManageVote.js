@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import CalendarDisplay from "../submit/CalendarDisplay";
-import Chart from "./Chart";
 import { useParams, useNavigate } from "react-router-dom";
+import CalendarDisplay from "../submit/CalendarDisplay";
+import DetailVoters from "./DetailVoters";
 import axios from "axios";
+import Chart from "./Chart";
 
 const baseURL =
   process.env.NODE_ENV === "production"
@@ -35,7 +36,6 @@ const ManageVote = ({
       }
       setVotingAgenda(response.data.votingAgenda);
     } catch (error) {
-      console.log(error);
       setFlashMessage({
         message: error.response.data.message,
         flash: "error",
@@ -75,6 +75,11 @@ const ManageVote = ({
           votingAgenda={votingAgenda}
         />
         <Chart
+          flashMessage={flashMessage}
+          setFlashMessage={setFlashMessage}
+          votingAgenda={votingAgenda}
+        />
+        <DetailVoters
           flashMessage={flashMessage}
           setFlashMessage={setFlashMessage}
           votingAgenda={votingAgenda}

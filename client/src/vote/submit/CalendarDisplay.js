@@ -55,12 +55,27 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
               </div>
             );
           })}
-          {/* Object.entries is used to convert from obj to array, because map only works on array */}
-          {Object.entries(votingResultsPerMonth.result).map((dayResult, i) => {
-            if (dayResult[0] <= totalDays) {
+
+          {votingResultsPerMonth.results.map((dayResult, i) => {
+            if (i + 1 <= totalDays) {
+              // limit display depends on max day on each month
               return (
                 <div
-                  key={`dayResult_${i}`}
+                  key={`dayResult_${i + 1}`}
+                  className={(() => {
+                    let className = "calendarMain" + " ";
+                    if (i + 1 == 1) {
+                      className = className + "firstDay_" + firstDay;
+                    }
+                    // making sure it is not undefined
+                    const darknessLevel = dayResult ? dayResult : 0;
+                    className =
+                      className +
+                      " bg_color_red_" +
+                      Math.round((darknessLevel / votingAgenda.totalVote) * 10);
+                    return className;
+                  })()}
+                  // onMouseEnter and onMouseLeave is to view numbers of voter when hovering to a date in calendar by searching for date that has .badgeVoters
                   onMouseEnter={(e) => {
                     if (e.target.querySelector(".badgeVoters")) {
                       document
@@ -79,28 +94,16 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
                         });
                     }
                   }}
-                  className={(() => {
-                    let className = "calendarMain" + " ";
-                    if (dayResult[0] == 1) {
-                      className = className + "firstDay_" + firstDay;
-                    }
-                    className =
-                      className +
-                      " bg_color_red_" +
-                      Math.round(
-                        (dayResult[1].length / votingAgenda.totalVote) * 10
-                      );
-                    return className;
-                  })()}
                 >
-                  {/* <span>{i + 1}</span> */}
-                  <span>{dayResult[0]}</span>
-                  {dayResult[1].length > 0 ? (
+                  {/* display the date number */}
+                  <span>{i + 1}</span>
+                  {/* if this date has voters, than give .badgeVoters to make it hover-able */}
+                  {dayResult > 0 ? (
                     <span
                       style={{ display: "none" }}
                       className="badge badgeVoters bg-success mx-1"
                     >
-                      {dayResult[1].length}
+                      {dayResult}
                     </span>
                   ) : (
                     ""

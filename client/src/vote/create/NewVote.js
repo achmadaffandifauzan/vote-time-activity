@@ -27,7 +27,8 @@ const NewVote = ({
   useEffect(() => {
     if (!currentUser) {
       setFlashMessage({
-        message: "You need to logged in first.",
+        message:
+          "You need to logged in first... but voters may not need to logged in to vote",
         flash: "error",
       });
       return navigate("/login");

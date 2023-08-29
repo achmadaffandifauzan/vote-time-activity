@@ -38,7 +38,7 @@ const options = {
 };
 
 const Chart = ({ flashMessage, setFlashMessage, votingAgenda }) => {
-  console.log(votingAgenda);
+  // console.log(votingAgenda);
   const labels = votingAgenda.dates;
   const data = {
     labels,
@@ -58,20 +58,16 @@ const Chart = ({ flashMessage, setFlashMessage, votingAgenda }) => {
       const backgroundColor = borderColor.replace(")", ", 0.5)");
       return {
         label: votingResultBymonth.monthWithYear,
+
+        // finding number of voter for available dates to vote
         data: votingAgenda.dates.map((date) => {
           // mapping all available dates to vote
+          // match the same month first (because votingAgenda.dates contain all selected dates)
           if (
             date.split("-")[1] ==
             votingResultBymonth.monthWithYear.split("-")[0]
           ) {
-            // match the same month first (because votingAgenda.dates contain all selected dates)
-            for (let key in votingResultBymonth.result) {
-              // looping object
-              if (parseInt(date.split("-")[0]) == parseInt(key)) {
-                // then match the same date
-                return votingResultBymonth.result[key].length;
-              }
-            }
+            return votingResultBymonth.results[parseInt(date.split("-")[0])];
           }
         }),
         borderColor: borderColor,

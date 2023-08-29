@@ -18,14 +18,11 @@ const removeDuplicates = (arr) => {
   return arr.filter((item, index) => arr.indexOf(item) === index);
 };
 function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
-  console.log(votingAgenda);
-
   const [selectedDates, setSelectedDates] = useState(); // default is (), if set to ([]), then DatePicker will be on multiple mode automatically. So, let the votingAgenda.allowMultipleDateVotes decide
   const [name, setName] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const submitVote = async (event) => {
-    console.log(selectedDates);
     event.preventDefault();
     try {
       try {
@@ -49,14 +46,12 @@ function CalendarSelect({ flashMessage, setFlashMessage, votingAgenda }) {
         dates,
         monthsWithYear,
       });
-      console.log(response);
       setFlashMessage({
         message: response.data.message,
         flash: "success",
       });
       window.location.reload();
     } catch (error) {
-      console.log(error);
       setFlashMessage({
         message: error.response.data.message,
         flash: "error",

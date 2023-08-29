@@ -83,8 +83,11 @@ function Login({ flashMessage, setFlashMessage, currentUser, setCurrentUser }) {
         </div>
         <button className="btn btn-success btnNewCustom mt-4">Login</button>
       </form>
-      <div className="mt-3">
-        Don't have an account ? <Link to="/register">Register</Link>
+      <div className="mt-3 ">
+        Don't have an account ?{" "}
+        <Link to="/register" className="text-decoration-none">
+          Register
+        </Link>
       </div>
     </div>
   );
