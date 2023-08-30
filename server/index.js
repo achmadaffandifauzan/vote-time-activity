@@ -9,15 +9,11 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const mongoSanitize = require("express-mongo-sanitize");
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
 const cors = require("cors");
-const { isLoggedIn } = require("./middleware");
 const ExpressError = require("./utils/ExpressError");
-const catchAsync = require("./utils/CatchAsync");
 const User = require("./models/user");
-const VotingAgenda = require("./models/votingAgenda");
-const VotingResult = require("./models/votingResult");
-const Vote = require("./models/vote");
+const userRoutes = require("./routes/users");
+const voteRoutes = require("./routes/votes");
 
 const dbUrl = process.env.DB_URL;
 mongoose.set("strictQuery", true);
@@ -32,22 +28,27 @@ mongoose.connection.once("open", () => {
 });
 const app = express();
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: "GET,POST",
-    // preflightContinue: true,
-    credentials: true, // Allow credentials (cookies) to be included (for matching session ID from the client and session data from the server), because it use react (with) different port (3000) vs server (3100). in production, it should not be matter.
-    // if disabled, req headers ommited (then meybe server cannot identify which user is which)
-  })
-);
 if (process.env.NODE_ENV !== "production") {
-  app.use(express.static(path.join(__dirname, "frontend/public")));
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      methods: "GET,POST",
+      // preflightContinue: true,
+      credentials: true, // Allow credentials (cookies) to be included (for matching session ID from the client and session data from the server), because it use react (with) different port (3000) vs server (3100). in production, it should not be matter.
+      // if disabled, req headers ommited (then meybe server cannot identify which user is which)
+    })
+  );
+  // console.log(path.join(__dirname.replace("\\server", ""), "client/public"));
+  app.use(
+    express.static(
+      path.join(__dirname.replace("\\server", ""), "client/public")
+    )
+  );
 } else {
   app.use(express.static(path.join(__dirname, "build")));
 }
 
-app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.static(path.join(__dirname, "public")));
 // app.use(express.urlencoded({ extended: true })); // its for html post form, also application/x-www-form-urlencoded, but post from react, use express.json() middleware
 app.use(express.json());
 mongoSanitize.sanitize({
@@ -89,198 +90,9 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
-app.get("/api/currentUser", isLoggedIn, (req, res) => {
-  return res.json({ user: req.user });
-});
-app.post(
-  "/api/register",
-  catchAsync(async (req, res, next) => {
-    const { email, username, name, password } = req.body;
-    try {
-      const newUser = new User({ email, username, name });
-      const registeredUser = await User.register(newUser, password);
-      await newUser.save();
-      req.login(registeredUser, (error) => {
-        if (req.isAuthenticated()) {
-          console.log("USER IS LOGGED IN");
-        }
-        if (error) return next(error);
-        res.status(200);
-        res.json({
-          message: "Successfully Registered!",
-          flash: "success",
-          user: req.user,
-        });
-      });
-    } catch (error) {
-      if (error.message.includes("E11000")) {
-        res.json({
-          message:
-            "A user with the given username or email is already registered",
-          flash: "error",
-        });
-      } else {
-        res.json({
-          message: error.message,
-          flash: "error",
-        });
-      }
-    }
-  })
-);
-app.post(
-  "/api/login",
-  passport.authenticate("local"),
-  catchAsync(async (req, res, next) => {
-    res.json({
-      message: "Successfully logged in!",
-      flash: "success",
-      user: req.user,
-    });
-  })
-);
-app.post(
-  "/api/logout",
-  isLoggedIn,
-  catchAsync(async (req, res, next) => {
-    req.logout(async (error) => {
-      if (error) return next(error);
-    });
-    return res.json({
-      message: "Successfully logged out.",
-      flash: "success",
-    });
-  })
-);
-app.post(
-  "/api/createVoting",
-  isLoggedIn,
-  catchAsync(async (req, res, next) => {
-    const { title, notes, dates, monthsWithYear, allowMultipleDateVotes } =
-      req.body;
-    try {
-      const votingAgenda = new VotingAgenda({
-        title,
-        monthsWithYear,
-        dates,
-        votersName: [],
-        totalVote: 0,
-        allowMultipleDateVotes,
-        notes,
-        author: req.user,
-      });
-      for (let month of monthsWithYear) {
-        const votingResult = new VotingResult();
-        votingResult.monthWithYear = month;
-        votingResult.votingAgenda = votingAgenda;
-        votingResult.results = [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0, 0, 0, 0, 0, 0, 0, 0,
-        ];
-        votingAgenda.votingResults.push(votingResult);
-        await votingResult.save();
-      }
-      await votingAgenda.save();
-      const user = await User.findById(req.user);
-      user.createdVote.push(votingAgenda);
-      await user.save();
-      return res.json({
-        message: "Successfully created",
-        flash: "success",
-        redirectData: `${votingAgenda._id}`,
-      });
-    } catch (error) {
-      return next(error);
-    }
-  })
-);
-app.get(
-  "/api/vote/:id",
-  catchAsync(async (req, res, next) => {
-    try {
-      const votingAgenda = await VotingAgenda.findById(req.params.id).populate({
-        path: "votingResults",
-      });
-      if (!votingAgenda) return next(new ExpressError("Not Found!", 404));
-      return res.json({
-        votingAgenda,
-      });
-    } catch (error) {
-      return next(new ExpressError("Not Found!", 404));
-    }
-  })
-);
-app.post(
-  "/api/vote/:id",
-  catchAsync(async (req, res, next) => {
-    // reminder :
-    // monthsWithYear -> [] (in VotingAgenda)
-    // monthWithYear -> "" (in VotingResult)
-    try {
-      const { name, dates, monthsWithYear } = req.body;
-      const votingAgenda = await VotingAgenda.findById(req.params.id);
-      votingAgenda.votersName.push(name);
-      votingAgenda.totalVote += 1;
-      // update by month
-      for (let month of monthsWithYear) {
-        const votingResult = await VotingResult.findOne({
-          votingAgenda: req.params.id,
-          monthWithYear: month,
-        });
-        for (let date of dates) {
-          // looping selected date then matching it to selected month, then operate
-          if (`${date.split("-")[1]}-${date.split("-")[2]}` == month) {
-            const vote = new Vote({
-              name,
-              votingAgenda,
-              votingResult,
-              votedDate: date,
-            });
-            await vote.save();
-            const day = parseInt(date.split("-")[0]);
-            // results is array of num (of numbers of vote)
-            votingResult.results[parseInt(day) - 1] += 1; // add 1 vote to the voted date
-            // details is array of vote model
-            votingResult.details.push(vote);
-          }
-        }
-        await votingResult.save();
-        await votingAgenda.save();
-      }
-      return res.json({
-        message: "Successfully vote!",
-        flash: "success",
-        redirectData: req.params.id,
-      });
-    } catch (error) {
-      return next(error);
-    }
-  })
-);
-app.get(
-  "/api/users/vote",
-  isLoggedIn,
-  catchAsync(async (req, res, next) => {
-    const votingAgendas = await VotingAgenda.find({ author: req.user });
-    return res.json({
-      votingAgendas,
-    });
-  })
-);
-// app.post(
-//   "/api/vote/:id/stat",isLoggedIn,catchAsync(async(req,res,next)=>{
-//     const votingAgenda = await VotingAgenda.findById(req.params.id).populate(
-//       "votingResults"
-//     );
-//     if (!votingAgenda) return next(new ExpressError("Not Found!", 404));
-//     if (votingAgenda.author !== req.user._id) return next(new ExpressError("You're not allowed to do that!", 401));
+app.use("/", userRoutes);
+app.use("/", voteRoutes);
 
-//     for (let i = 1; i<=30;i++){
-//       await VotingResult.find({votingAgenda:votingAgenda,result})
-//     }
-
-//   })
-// )
 app.all("*", (req, res, next) => {
   next(new ExpressError("Not Found!", 404));
 });

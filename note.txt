@@ -1,10 +1,5 @@
-- home page (for unauthenticated user)
-
-
-find voter and his votes
-find voters who selects certain date
-
-
-(-) feature : 
-switch language
-vote result deeper analytics
+(+) need to add features : 
+1. switch language
+2. vote result deeper analytics, such as :
+- find voter and his votes
+- find voters who selects certain date
