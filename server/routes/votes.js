@@ -172,4 +172,38 @@ router.post(
     }
   })
 );
+router.post(
+  "/api/vote/:id/searchByDates",
+  isLoggedIn,
+  catchAsync(async (req, res, next) => {
+    try {
+      const { dates, votingAgenda } = req.body;
+      // example : dates is 18 ,19, 20. find Vote where votedDate is $in:[18 ,19, 20], if user x is not appear 3 times, then it means he's not voted on every dates in 18 ,19, 20, hes not qualified
+      const votes = await Vote.aggregate([
+        {
+          $match: {
+            "votingAgenda._id": votingAgenda._id,
+            votedDate: { $in: dates },
+          },
+        },
+        {
+          $group: {
+            _id: "$name",
+            createdAt: { $first: "$createdAt" },
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+      // console.log(votes);
+      const users = votes.filter((user) => {
+        return user.count === dates.length;
+      });
+      return res.send({
+        users,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  })
+);
 module.exports = router;

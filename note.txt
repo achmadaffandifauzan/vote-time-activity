@@ -4,8 +4,10 @@
 - find voter and his votes
 - find voters who selects certain date
 
+perhaps use aggregation instead of find({}) on loop
+
 make votingagenda and currentuser as state in App, the pass it everywhere else 
 
 bug :
 - unauthenticated user can access /users/vote
-- session over no notif
+- session over navbar bug and no notif

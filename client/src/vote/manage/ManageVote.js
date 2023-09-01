@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import CalendarDisplay from "../submit/CalendarDisplay";
-import DetailVoters from "./DetailVoters";
 import SearchByNames from "./SearchByNames";
 import axios from "axios";
 import FrequencyByDates from "./FreqByDates";
+import SearchByDates from "./SearchByDates";
 
 const baseURL =
   process.env.NODE_ENV === "production"
@@ -83,14 +83,14 @@ const ManageVote = ({
           />
         </div>
         <div className="details-manage col-lg-10 offset-lg-1 my-4">
-          <DetailVoters
+          <SearchByNames
             flashMessage={flashMessage}
             setFlashMessage={setFlashMessage}
             votingAgenda={votingAgenda}
           />
         </div>
         <div className="details-manage col-lg-10 offset-lg-1 my-4">
-          <SearchByNames
+          <SearchByDates
             flashMessage={flashMessage}
             setFlashMessage={setFlashMessage}
             votingAgenda={votingAgenda}

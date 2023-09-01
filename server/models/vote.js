@@ -17,9 +17,6 @@ const voteSchema = new Schema(
     username: {
       type: String,
     },
-    created: {
-      type: String,
-    },
     votedDate: {
       type: String,
     },
