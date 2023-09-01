@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CalendarDisplay from "../submit/CalendarDisplay";
-import Chart from "./Chart";
+import Chart from "./FreqByDates";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 

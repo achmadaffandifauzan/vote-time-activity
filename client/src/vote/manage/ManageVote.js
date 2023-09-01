@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import CalendarDisplay from "../submit/CalendarDisplay";
 import DetailVoters from "./DetailVoters";
+import SearchByNames from "./SearchByNames";
 import axios from "axios";
-import Chart from "./Chart";
+import FrequencyByDates from "./FreqByDates";
 
 const baseURL =
   process.env.NODE_ENV === "production"
@@ -48,7 +49,7 @@ const ManageVote = ({
   }, [currentUser]);
   if (votingAgenda && currentUser) {
     return (
-      <>
+      <div className="pb-5">
         <div className="d-flex flex-column col-md-6 offset-md-3">
           <div className="text-center fw-bold">
             <span className=" color-VoteSchedule">Voting result of</span>{" "}
@@ -74,17 +75,28 @@ const ManageVote = ({
           setFlashMessage={setFlashMessage}
           votingAgenda={votingAgenda}
         />
-        <Chart
-          flashMessage={flashMessage}
-          setFlashMessage={setFlashMessage}
-          votingAgenda={votingAgenda}
-        />
-        <DetailVoters
-          flashMessage={flashMessage}
-          setFlashMessage={setFlashMessage}
-          votingAgenda={votingAgenda}
-        />
-      </>
+        <div className="details-manage col-lg-10 offset-lg-1 my-4">
+          <FrequencyByDates
+            flashMessage={flashMessage}
+            setFlashMessage={setFlashMessage}
+            votingAgenda={votingAgenda}
+          />
+        </div>
+        <div className="details-manage col-lg-10 offset-lg-1 my-4">
+          <DetailVoters
+            flashMessage={flashMessage}
+            setFlashMessage={setFlashMessage}
+            votingAgenda={votingAgenda}
+          />
+        </div>
+        <div className="details-manage col-lg-10 offset-lg-1 my-4">
+          <SearchByNames
+            flashMessage={flashMessage}
+            setFlashMessage={setFlashMessage}
+            votingAgenda={votingAgenda}
+          />
+        </div>
+      </div>
     );
   } else {
     <div>Loading...</div>;

@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,22 +20,18 @@ const options = {
   indexAxis: "y",
   elements: {
     bar: {
-      borderWidth: 2,
+      borderWidth: 0,
     },
   },
   responsive: true,
   plugins: {
     legend: {
-      position: "right",
-    },
-    title: {
-      display: true,
-      text: "Horizontal Bar Chart",
+      position: "top",
     },
   },
 };
 
-const Chart = ({ flashMessage, setFlashMessage, votingAgenda }) => {
+const FrequencyByDates = ({ flashMessage, setFlashMessage, votingAgenda }) => {
   // console.log(votingAgenda);
   const labels = votingAgenda.dates;
   const data = {
@@ -52,10 +46,9 @@ const Chart = ({ flashMessage, setFlashMessage, votingAgenda }) => {
     //   },
     // ],
     datasets: votingAgenda.votingResults.map((votingResultBymonth) => {
-      const borderColor = `rgb(255, ${Math.floor(
+      const backgroundColor = `rgb(255, ${Math.floor(
         Math.random() * 256
       )}, ${Math.floor(Math.random() * 256)})`;
-      const backgroundColor = borderColor.replace(")", ", 0.5)");
       return {
         label: votingResultBymonth.monthWithYear,
 
@@ -74,12 +67,16 @@ const Chart = ({ flashMessage, setFlashMessage, votingAgenda }) => {
             return 0;
           }
         }),
-        borderColor: borderColor,
         backgroundColor: backgroundColor,
       };
     }),
   };
 
-  return <Bar options={options} data={data} />;
+  return (
+    <div className="border border-2 border-light-subtle rounded-3 p-3">
+      <div className="text-muted text-center mb-1">Frequency by dates</div>
+      <Bar options={options} data={data} />
+    </div>
+  );
 };
-export default Chart;
+export default FrequencyByDates;

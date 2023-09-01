@@ -16,6 +16,10 @@ const Navbar = ({
   currentUser,
   setCurrentUser,
 }) => {
+  const [currentUserState, setCurrentUserState] = useState(currentUser);
+  useEffect(() => {
+    setCurrentUserState(currentUser);
+  }, [currentUser]);
   const navigate = useNavigate();
   const location = useLocation();
   const handleLogout = async () => {

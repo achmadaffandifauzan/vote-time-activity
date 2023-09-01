@@ -3,3 +3,9 @@
 2. vote result deeper analytics, such as :
 - find voter and his votes
 - find voters who selects certain date
+
+make votingagenda and currentuser as state in App, the pass it everywhere else 
+
+bug :
+- unauthenticated user can access /users/vote
+- session over no notif

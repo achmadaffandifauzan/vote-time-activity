@@ -75,7 +75,9 @@ router.post(
     try {
       const { name, dates, monthsWithYear } = req.body;
       const votingAgenda = await VotingAgenda.findById(req.params.id);
-      votingAgenda.votersName.push(name);
+      if (!votingAgenda.votersName.includes(name)) {
+        votingAgenda.votersName.push(name);
+      }
       votingAgenda.totalVote += 1;
       // update by month
       for (let month of monthsWithYear) {
@@ -86,12 +88,27 @@ router.post(
         for (let date of dates) {
           // looping selected date then matching it to selected month, then operate
           if (`${date.split("-")[1]}-${date.split("-")[2]}` == month) {
+            const existingSimilarVote = await Vote.find({
+              votingAgenda: votingAgenda,
+              name: name,
+              votedDate: date,
+            });
+            // console.log(existingSimilarVote);
+            if (existingSimilarVote.length > 0) {
+              return next(
+                new ExpressError(
+                  `Same name on the same vote date : ${date} is already exist!`,
+                  403
+                )
+              );
+            }
             const vote = new Vote({
               name,
               votingAgenda,
               votingResult,
               votedDate: date,
             });
+
             await vote.save();
             const day = parseInt(date.split("-")[0]);
             // results is array of num (of numbers of vote)
@@ -137,5 +154,22 @@ router.get(
 
 //   })
 // )
-
+router.post(
+  "/api/vote/:id/searchByNames",
+  isLoggedIn,
+  catchAsync(async (req, res, next) => {
+    try {
+      const { names, votingAgenda } = req.body;
+      const votes = [];
+      for (let name of names) {
+        votes.push(await Vote.find({ votingAgenda: votingAgenda, name: name }));
+      }
+      return res.send({
+        votes,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  })
+);
 module.exports = router;

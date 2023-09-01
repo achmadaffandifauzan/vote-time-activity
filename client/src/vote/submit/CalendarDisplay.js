@@ -17,6 +17,7 @@ const monthNames = [
   "December",
 ];
 function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
+  console.log(votingAgenda);
   const [selectedMonthToDisplay, setSelectedMonthToDisplay] = useState();
   useEffect(() => {
     // automatically select a month to display on after page load
@@ -95,8 +96,21 @@ function CalendarDisplay({ flashMessage, setFlashMessage, votingAgenda }) {
                     }
                   }}
                 >
-                  {/* display the date number */}
-                  <span>{i + 1}</span>
+                  {/* display the date number, if not in votable dates, add text-muted */}
+                  {(() => {
+                    if (
+                      votingAgenda.dates.includes(
+                        `${i + 1}-${votingResultsPerMonth.monthWithYear}`
+                      ) ||
+                      votingAgenda.dates.includes(
+                        `0${i + 1}-${votingResultsPerMonth.monthWithYear}`
+                      )
+                    ) {
+                      return <span className="fw-bold">{i + 1}</span>;
+                    } else {
+                      return <span className="text-black-50">{i + 1}</span>;
+                    }
+                  })()}
                   {/* if this date has voters, than give .badgeVoters to make it hover-able */}
                   {dayResult > 0 ? (
                     <span

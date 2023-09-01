@@ -1,53 +1,56 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const votingAgendaSchema = new Schema({
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  // years and months are help to display vote result in calendar format
-  monthsWithYear: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
-  dates: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
-  votersName: [
-    {
-      // to make sure same name cannot vote more than once on one VotingAgenda,
-      // why not unique : true ? becasuse unique will check to different VotingAgenda as well, not this VotingAgenda only
-      type: String,
-    },
-  ],
-  totalVote: {
-    // each person may vote multiple date, that's why totalVote is needed for stats use
-    type: Number,
-  },
-  votingResults: [
-    {
+const votingAgendaSchema = new Schema(
+  {
+    author: {
       type: Schema.Types.ObjectId,
-      ref: "VotingResult",
+      ref: "User",
+      required: true,
     },
-  ],
-  allowMultipleDateVotes: {
-    type: Boolean,
-    required: true,
+    title: {
+      type: String,
+      required: true,
+    },
+    // years and months are help to display vote result in calendar format
+    monthsWithYear: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    dates: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    votersName: [
+      {
+        // to make sure same name cannot vote more than once on one VotingAgenda,
+        // why not unique : true ? becasuse unique will check to different VotingAgenda as well, not this VotingAgenda only
+        type: String,
+      },
+    ],
+    totalVote: {
+      // each person may vote multiple date, that's why totalVote is needed for stats use
+      type: Number,
+    },
+    votingResults: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "VotingResult",
+      },
+    ],
+    allowMultipleDateVotes: {
+      type: Boolean,
+      required: true,
+    },
+    notes: {
+      type: String,
+    },
   },
-  notes: {
-    type: String,
-  },
-});
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("VotingAgenda", votingAgendaSchema);

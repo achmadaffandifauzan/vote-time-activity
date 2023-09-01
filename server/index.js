@@ -94,7 +94,11 @@ app.use("/", userRoutes);
 app.use("/", voteRoutes);
 
 app.all("*", (req, res, next) => {
-  next(new ExpressError("Not Found!", 404));
+  if (process.env.NODE_ENV !== "production") {
+    next(new ExpressError("Not Found!", 404));
+  } else {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  }
 });
 
 // accepting error from express error, middleware (next(error)), or anywhere else
